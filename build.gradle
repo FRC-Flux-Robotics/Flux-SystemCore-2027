@@ -1,0 +1,416 @@
+plugins {
+    id "java"
+    id "edu.wpi.first.GradleRIO" version "2026.2.1"
+}
+
+group = 'frc.flux'
+version = '2027.1.0'
+
+java {
+    sourceCompatibility = JavaVersion.VERSION_17
+    targetCompatibility = JavaVersion.VERSION_17
+}
+
+def ROBOT_MAIN_CLASS = "frc.robot.Main"
+
+deploy {
+    targets {
+        roborio(getTargetTypeClass('RoboRIO')) {
+            team = project.frc.getTeamNumber()
+            debug = project.frc.getDebugOrDefault(false)
+
+            artifacts {
+                frcJava(getArtifactTypeClass('FRCJavaArtifact')) {
+                    jvmArgs.add("-XX:+UseSerialGC")
+                    jvmArgs.add("-XX:MaxGCPauseMillis=50")
+                    jvmArgs.add("-XX:+HeapDumpOnOutOfMemoryError")
+                }
+
+                frcStaticFileDeploy(getArtifactTypeClass('FileTreeArtifact')) {
+                    files = project.fileTree('src/main/deploy')
+                    directory = '/home/lvuser/deploy'
+                    deleteOldFiles = false
+                }
+            }
+        }
+    }
+}
+
+def deployArtifact = deploy.targets.roborio.artifacts.frcJava
+
+wpi.java.debugJni = false
+def includeDesktopSupport = true
+
+repositories {
+    maven { url = uri("https://frcmaven.wpi.edu/artifactory/littletonrobotics-mvn-release") }
+}
+
+def akitJson = new groovy.json.JsonSlurper().parseText(new File(projectDir.getAbsolutePath() + "/vendordeps/AdvantageKit.json").text)
+
+dependencies {
+    implementation files('libs/fluxfig-1.0.0.jar')
+    annotationProcessor wpi.java.deps.wpilibAnnotations()
+    annotationProcessor "org.littletonrobotics.akit:akit-autolog:$akitJson.version"
+    implementation wpi.java.deps.wpilib()
+    implementation wpi.java.vendor.java()
+
+    roborioDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.roborio)
+    roborioDebug wpi.java.vendor.jniDebug(wpi.platforms.roborio)
+
+    roborioRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.roborio)
+    roborioRelease wpi.java.vendor.jniRelease(wpi.platforms.roborio)
+
+    nativeDebug wpi.java.deps.wpilibJniDebug(wpi.platforms.desktop)
+    nativeDebug wpi.java.vendor.jniDebug(wpi.platforms.desktop)
+    simulationDebug wpi.sim.enableDebug()
+
+    nativeRelease wpi.java.deps.wpilibJniRelease(wpi.platforms.desktop)
+    nativeRelease wpi.java.vendor.jniRelease(wpi.platforms.desktop)
+    simulationRelease wpi.sim.enableRelease()
+
+    testImplementation 'org.junit.jupiter:junit-jupiter:5.10.1'
+    testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
+}
+
+test {
+    useJUnitPlatform()
+    systemProperty 'junit.jupiter.extensions.autodetection.enabled', 'true'
+    filter {
+        excludeTestsMatching "frc.simharness.StudentAutoRenderTest.*"
+    }
+    testLogging {
+        events "passed", "skipped", "failed", "standardOut"
+        showStandardStreams = true
+        showExceptions = true
+        showCauses = true
+        exceptionFormat = "short"
+    }
+}
+
+wpi.sim.addGui().defaultEnabled = true
+wpi.sim.addDriverstation()
+
+jar {
+    preserveFileTimestamps = false
+    reproducibleFileOrder = true
+    from { configurations.runtimeClasspath.collect { it.isDirectory() ? it : zipTree(it) } }
+    // Embed .java sources and FluxFig CSVs inside META-INF/flux-src for pit recovery
+    from('src/main/java') { into 'META-INF/flux-src/java' }
+    from('src/main/deploy') { into 'META-INF/flux-src/deploy' }
+    manifest edu.wpi.first.gradlerio.GradleRIOPlugin.javaManifest(ROBOT_MAIN_CLASS)
+    duplicatesStrategy = DuplicatesStrategy.INCLUDE
+}
+
+deployArtifact.jarTask = jar
+wpi.java.configureExecutableTasks(jar)
+wpi.java.configureTestTasks(test)
+
+tasks.withType(JavaCompile).configureEach {
+    options.encoding = 'UTF-8'
+    options.release.set(17)
+    options.compilerArgs += ['-XDstringConcat=inline', '-Xlint:all,-serial,-processing,-deprecation,-rawtypes,-unchecked']
+}
+
+// Task: syncLocalFluxFig — If ../FluxFig/dist/fluxfig.jar exists locally, pulls it into libs/fluxfig-1.0.0.jar
+tasks.register('syncLocalFluxFig', Copy) {
+    group = 'flux'
+    description = 'Pulls ../FluxFig/dist/fluxfig.jar into libs/fluxfig-1.0.0.jar if present on disk.'
+    onlyIf { file('../FluxFig/dist/fluxfig.jar').exists() }
+    from file('../FluxFig/dist/fluxfig.jar')
+    into file('libs')
+    rename { 'fluxfig-1.0.0.jar' }
+}
+
+compileJava.dependsOn 'syncLocalFluxFig'
+
+// Task: updateStudentDocs — Auto-syncs STUDENTS.md, docs/class-map.svg, and docs/class-map.html from Java classes & FluxFig CSVs
+tasks.register('updateStudentDocs') {
+    group = 'flux'
+    description = 'Generates STUDENTS.md, docs/class-map.svg, and docs/class-map.html from live Java sources.'
+    doLast {
+        try {
+            def proc = new ProcessBuilder("python3", "./scripts/generate_class_map.py")
+                .directory(projectDir)
+                .inheritIO()
+                .start()
+            int exitCode = proc.waitFor()
+            if (exitCode != 0) {
+                throw new GradleException("generate_class_map.py failed with exit code " + exitCode)
+            }
+        } catch (java.io.IOException ignored) {
+            println "updateStudentDocs: python3 not present in this container; using pre-generated STUDENTS.md and docs/class-map.*"
+        }
+    }
+}
+
+// Task: checkStudentDocs — Verifies STUDENTS.md, STUDENT-CHANGELOG.md, and docs/class-map.* are in sync with live Java sources
+tasks.register('checkStudentDocs', Test) {
+    group = 'flux'
+    description = 'Verifies STUDENTS.md, STUDENT-CHANGELOG.md, and class maps are synchronized with live Java classes.'
+    dependsOn 'updateStudentDocs'
+    useJUnitPlatform()
+    filter {
+        includeTestsMatching "frc.simharness.Tier1ArchitectureHygieneTest.testStudentDocsAndChangelogSynced"
+    }
+}
+
+// Tasks: spotlessApply / spotlessCheck — Normalizes trailing whitespace & LF line endings across Java sources
+tasks.register('spotlessApply') {
+    group = 'formatting'
+    description = 'Normalizes UTF-8 LF line endings and trims trailing whitespace across Java source files.'
+    doLast {
+        fileTree('src').matching { include '**/*.java' }.each { File f ->
+            String original = f.getText('UTF-8')
+            String normalized = original.replace('\r\n', '\n').split('\n', -1).collect { it.replaceAll(/[ \t]+$/, '') }.join('\n')
+            if (!normalized.endsWith('\n')) {
+                normalized += '\n'
+            }
+            if (normalized != original) {
+                f.setText(normalized, 'UTF-8')
+            }
+        }
+    }
+}
+
+tasks.register('spotlessCheck') {
+    group = 'formatting'
+    description = 'Checks that Java source files have clean UTF-8 LF line endings.'
+    dependsOn 'spotlessApply'
+}
+
+// Task: backTo2026 — Translates & stages the 1:1 shared core engine (frc.lib.* + libs/fluxfig-1.0.0.jar) inside build/backTo2026/Flux-RoboRIO-2027,
+// keeping repository isolation strict and never overwriting sibling repositories on disk.
+// Pass -PincludeRobot=true (or run backTo2026FullRobot) on Kickoff Day 1 to also stage translated 2027 frc.robot.* and deploy/configs.
+tasks.register('backTo2026') {
+    group = 'flux'
+    description = 'Translates (org.wpilib.* -> edu.wpi.first.*) via BackTo2026Translator and stages shared frc.lib.* core engine and libs/fluxfig-1.0.0.jar inside build/backTo2026/Flux-RoboRIO-2027 without touching sibling repositories.'
+    dependsOn 'updateStudentDocs', 'compileJava'
+    doLast {
+        def targetDir = new File(buildDir, "backTo2026/Flux-RoboRIO-2027")
+        def targetLibDir = new File(targetDir, "src/main/java/frc/lib")
+        delete targetLibDir
+        targetLibDir.mkdirs()
+
+        def srcLibDir = new File(projectDir, "src/main/java/frc/lib")
+        javaexec {
+            classpath = sourceSets.main.runtimeClasspath
+            mainClass = 'frc.lib.util.BackTo2026Translator'
+            args = [srcLibDir.absolutePath, targetLibDir.absolutePath]
+        }
+        if (project.hasProperty('includeRobot') && project.property('includeRobot').toString().toBoolean()) {
+            def targetRobotDir = new File(targetDir, "src/main/java/frc/robot")
+            delete targetRobotDir
+            targetRobotDir.mkdirs()
+            def srcRobotDir = new File(projectDir, "src/main/java/frc/robot")
+            javaexec {
+                classpath = sourceSets.main.runtimeClasspath
+                mainClass = 'frc.lib.util.BackTo2026Translator'
+                args = [srcRobotDir.absolutePath, targetRobotDir.absolutePath]
+            }
+            copy {
+                from new File(projectDir, "src/main/deploy")
+                into new File(targetDir, "src/main/deploy")
+            }
+        }
+        copy {
+            from new File(projectDir, "libs")
+            into new File(targetDir, "libs")
+        }
+    }
+}
+
+tasks.register('backTo2026FullRobot') {
+    group = 'flux'
+    description = 'Kickoff Day-1 helper: translates & stages both frc.lib.* and 2027 frc.robot.* + deploy/configs inside build/backTo2026/Flux-RoboRIO-2027 for COMP_2027 roboRIO 2.0 fallback.'
+    dependsOn 'updateStudentDocs', 'compileJava'
+    doLast {
+        def targetDir = new File(buildDir, "backTo2026/Flux-RoboRIO-2027")
+        for (def subPkg : ["src/main/java/frc/lib", "src/main/java/frc/robot"]) {
+            def dst = new File(targetDir, subPkg)
+            delete dst
+            dst.mkdirs()
+            javaexec {
+                classpath = sourceSets.main.runtimeClasspath
+                mainClass = 'frc.lib.util.BackTo2026Translator'
+                args = [new File(projectDir, subPkg).absolutePath, dst.absolutePath]
+            }
+        }
+        copy {
+            from new File(projectDir, "src/main/deploy")
+            into new File(targetDir, "src/main/deploy")
+        }
+        copy {
+            from new File(projectDir, "libs")
+            into new File(targetDir, "libs")
+        }
+    }
+}
+
+// Task: generateFluxPkgManifest — Generates manifest.json required by FluxTray.jar PackageDeployer
+tasks.register('generateFluxPkgManifest') {
+    group = 'flux'
+    description = 'Generates manifest.json (targetPlatform=systemcore-2027, gitSha, configSha) for .fluxpkg.zip.'
+    dependsOn 'syncLocalFluxFig'
+    doLast {
+        def manifestDir = file("$buildDir/tmp/fluxpkg")
+        manifestDir.mkdirs()
+
+        def gitSha = "00000000"
+        def gitDirty = false
+        try {
+            def shaProc = new ProcessBuilder("git", "rev-parse", "--short=8", "HEAD").directory(projectDir).start()
+            if (shaProc.waitFor() == 0) {
+                def out = shaProc.inputStream.text.trim()
+                if (out) gitSha = out
+            }
+            def dirtyProc = new ProcessBuilder("git", "status", "--porcelain").directory(projectDir).start()
+            if (dirtyProc.waitFor() == 0) {
+                gitDirty = !dirtyProc.inputStream.text.trim().isEmpty()
+            }
+        } catch (Exception ignored) {}
+
+        def configSha = "00000000"
+        try {
+            def javaExe = new File(System.getProperty("java.home"), "bin/java").absolutePath
+            if (!new File(javaExe).exists()) javaExe = "java"
+            def shaProc = new ProcessBuilder(
+                javaExe, "-jar", file("libs/fluxfig-1.0.0.jar").absolutePath,
+                "sha256", file("src/main/deploy/configs").absolutePath
+            ).directory(projectDir).start()
+            if (shaProc.waitFor() == 0) {
+                def out = shaProc.inputStream.text.trim()
+                if (out) configSha = out
+            }
+        } catch (Exception ignored) {}
+
+        def authorLaptop = "cloudbuild"
+        try {
+            authorLaptop = java.net.InetAddress.getLocalHost().getHostName()
+        } catch (Exception ignored) {}
+
+        def pkgChannel = project.findProperty('channel') ?: (gitDirty ? "EXPERIMENTAL" : "STABLE")
+        def manifestJson = """{
+  "packageName": "STABLE_v2027.1.0_systemcore-2027",
+  "targetPlatform": "systemcore-2027",
+  "channel": "${pkgChannel}",
+  "gitSha": "${gitSha}",
+  "gitDirty": ${gitDirty},
+  "configSha": "${configSha}",
+  "authorLaptop": "${authorLaptop}"
+}
+"""
+        new File(manifestDir, "manifest.json").setText(manifestJson, "UTF-8")
+    }
+}
+
+// Task: buildFluxPkg — Creates self-contained .fluxpkg.zip for FluxTray.jar
+tasks.register('buildFluxPkg', Zip) {
+    group = 'flux'
+    description = 'Packages manifest.json, frcUserProgram.jar (with embedded sources), and deploy/ into .fluxpkg.zip.'
+    dependsOn 'jar', 'generateFluxPkgManifest'
+    archiveFileName = "STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
+    destinationDirectory = file("$buildDir/packages")
+    from("$buildDir/tmp/fluxpkg/manifest.json")
+    from(jar.archiveFile) {
+        rename { "frcUserProgram.jar" }
+    }
+    from('src/main/deploy') {
+        into 'deploy'
+    }
+    doLast {
+        copy {
+            from archiveFile.get().asFile
+            into destinationDirectory.get().asFile
+            rename { "STABLE_v2027.1.0_fluxpkg.zip" }
+        }
+    }
+}
+
+// Shared helper: Invokes standalone FluxProcessor (--render-auto) on build/auto-sim/student-auto-frames.json
+def runFluxProcessorAutoRender = {
+    def framesJson = file("$buildDir/auto-sim/student-auto-frames.json")
+    if (!framesJson.exists()) {
+        throw new GradleException("renderAuto: Expected simulation output not found at " + framesJson.absolutePath)
+    }
+    def outDir = file("$buildDir/auto-sim")
+    def candidates = [
+        file('../FluxProcessor/dist/flux-processor.jar'),
+        file('tools/flux-processor.jar'),
+        file("$buildDir/tools/flux-processor.jar"),
+        file("$buildDir/tools/FluxProcessor/dist/flux-processor.jar")
+    ]
+    File processorJar = candidates.find { it.exists() }
+    if (processorJar == null) {
+        def cacheDir = file("$buildDir/tools/FluxProcessor")
+        println "renderAuto: Standalone FluxProcessor not found at ../FluxProcessor; fetching dist/flux-processor.jar into build/tools/..."
+        if (!cacheDir.exists()) {
+            new ProcessBuilder("git", "clone", "--depth", "1", "https://github.com/FRC-Flux-Robotics/FluxProcessor.git", cacheDir.absolutePath)
+                .directory(projectDir)
+                .inheritIO()
+                .start()
+                .waitFor()
+        }
+        def fetchedJar = new File(cacheDir, "dist/flux-processor.jar")
+        if (fetchedJar.exists()) {
+            processorJar = fetchedJar
+        }
+    }
+    if (processorJar != null && processorJar.exists()) {
+        def javaExe = new File(System.getProperty("java.home"), "bin/java").absolutePath
+        if (!new File(javaExe).exists()) {
+            javaExe = "java"
+        }
+        println "renderAuto: Running FluxProcessor (${processorJar.path}) --render-auto -> ${outDir.path}"
+        int rc = new ProcessBuilder(
+            javaExe, "-jar", processorJar.absolutePath,
+            "--render-auto", framesJson.absolutePath,
+            "--out", outDir.absolutePath
+        ).directory(projectDir).inheritIO().start().waitFor()
+        if (rc != 0) {
+            throw new GradleException("FluxProcessor --render-auto failed with exit code " + rc)
+        }
+        println "renderAuto complete! Open: " + new File(outDir, "student-auto.html").absolutePath
+    } else {
+        println "renderAuto: Exported " + framesJson.absolutePath + " (clone ../FluxProcessor to render .html/.mp4)"
+    }
+}
+
+// Task: renderAuto — Full student pipeline:
+//   1. Simulates the default STUDENT autonomous routine -> build/auto-sim/student-auto-frames.json
+//   2. Automatically invokes standalone FluxProcessor (--render-auto) -> build/auto-sim/student-auto.html + student-auto.mp4
+tasks.register('renderAuto', Test) {
+    group = 'flux'
+    description = 'Simulates the selected autonomous routine (-Pauto="<name>" or default STUDENT auto) and runs FluxProcessor (--render-auto) to output build/auto-sim/student-auto.html + student-auto.mp4.'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    systemProperty 'flux.auto', (project.findProperty('auto') ?: '')
+    filter {
+        includeTestsMatching "frc.simharness.StudentAutoRenderTest.renderSelectedStudentAuto"
+    }
+    testLogging {
+        events "passed", "failed", "standardOut"
+        showStandardStreams = true
+        showExceptions = true
+        exceptionFormat = "short"
+    }
+    outputs.upToDateWhen { false }
+    doLast {
+        runFluxProcessorAutoRender()
+    }
+}
+wpi.java.configureTestTasks(tasks.named('renderAuto').get())
+
+// Task: checkExercises — Grades the 4-level StudentExercises.java kit in < 3 seconds
+tasks.register('checkExercises', Test) {
+    group = 'flux'
+    description = 'Runs StudentExercisesTest to grade all 4 student exercises (FluxFig safety, Superstructure interlock, Swerve pose alignment, and 2-piece Auto).'
+    testClassesDirs = sourceSets.test.output.classesDirs
+    classpath = sourceSets.test.runtimeClasspath
+    useJUnitPlatform()
+    filter {
+        includeTestsMatching "frc.simharness.StudentExercisesTest.*"
+    }
+    outputs.upToDateWhen { false }
+}
+wpi.java.configureTestTasks(tasks.named('checkExercises').get())

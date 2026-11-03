@@ -1,0 +1,477 @@
+{
+  "version": 1.0,
+  "grid_size": 128,
+  "tabs": [
+    {
+      "name": "Setup",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Field",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 640.0,
+            "height": 384.0,
+            "type": "Field",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Drive/Pose",
+              "period": 0.033,
+              "field_game": "Rebuilt",
+              "robot_width": 0.86,
+              "robot_length": 0.86,
+              "show_other_objects": true,
+              "show_trajectories": true,
+              "field_rotation": 0.0,
+              "robot_color": 4280982527,
+              "trajectory_color": 4294967295,
+              "show_robot_outside_widget": true
+            }
+          },
+          {
+            "title": "FluxFig Version",
+            "x": 640.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/FluxFig/EffectiveVersion",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Auto Chooser",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "ComboBox Chooser",
+            "properties": {
+              "topic": "/SmartDashboard/Auto/Chooser",
+              "period": 0.033,
+              "sort_options": false
+            }
+          },
+          {
+            "title": "BFG Battery ID",
+            "x": 640.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Battery/Name",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Aux CAN Bus",
+            "x": 896.0,
+            "y": 128.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Battery/AuxCanBus",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Battery Healthy",
+            "x": 1088.0,
+            "y": 128.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Battery/Healthy",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Pit Check Passed",
+            "x": 640.0,
+            "y": 256.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PitCheck/Passed",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Pit Check Summary",
+            "x": 896.0,
+            "y": 256.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PitCheck/Summary",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Vision & Cal",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "PreMatch ReadyToPlay",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PreMatch/ReadyToPlay",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Gyro Seeded",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PreMatch/GyroSeeded",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Start Pose Error (m)",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PreMatch/PoseErrorMeters",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Start Heading Error (deg)",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/PreMatch/HeadingErrorDeg",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Vision Frames Drained",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/TotalFramesDrained",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Vision Accepted Count",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Vision/AcceptedObservations",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Bootstrap Completed",
+            "x": 512.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/ZeroPriorBootstrap/Completed",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Drive Style",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Joystick Deadband",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Drive/JoystickCurve/Deadband",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Joystick Knee Input",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Drive/JoystickCurve/KneeInput",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Joystick Knee Output",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Drive/JoystickCurve/KneeOutput",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Joystick Max Output",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/Drive/JoystickCurve/MaxOutput",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Tuning",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Elevator kP",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/ElevatorLeader/kP",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Elevator kG",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/ElevatorLeader/kG",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "ArmPivot kP",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/ArmPivot/kP",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "IntakeRoller kP",
+            "x": 768.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/Tuning/IntakeRoller/kP",
+              "period": 0.033,
+              "show_submit_button": true
+            }
+          },
+          {
+            "title": "Ghost Mode Active",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Superstructure/GhostModeActive",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Superstructure State",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Superstructure/State",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    },
+    {
+      "name": "Auto Test",
+      "grid_layout": {
+        "layouts": [],
+        "containers": [
+          {
+            "title": "Preflight Passed",
+            "x": 0.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Boolean Box",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Auto/PreflightPassed",
+              "period": 0.033,
+              "color_when_true": 4278255360,
+              "color_when_false": 4294901760
+            }
+          },
+          {
+            "title": "Auto Status",
+            "x": 256.0,
+            "y": 0.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Auto/Status",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Cancel Reason",
+            "x": 512.0,
+            "y": 0.0,
+            "width": 384.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Auto/CancelReason",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Start Error (m)",
+            "x": 896.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Auto/StartErrorM",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Current Speed (m/s)",
+            "x": 1088.0,
+            "y": 0.0,
+            "width": 192.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/Auto/CurrentSpeedMps",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Shop Stress Capsule",
+            "x": 0.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/ShopStressSuite/ActiveCapsule",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          },
+          {
+            "title": "Shop Wall Breaches",
+            "x": 256.0,
+            "y": 128.0,
+            "width": 256.0,
+            "height": 128.0,
+            "type": "Text Display",
+            "properties": {
+              "topic": "/AdvantageKit/RealOutputs/ShopStressSuite/WallBreaches",
+              "period": 0.033,
+              "show_submit_button": false
+            }
+          }
+        ]
+      }
+    }
+  ]
+}

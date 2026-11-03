@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="228" height="22" viewBox="0 0 228 22" role="img" aria-label="Tier 1 Hygiene: 100% PASS">
+  <clipPath id="r">
+    <rect width="228" height="22" rx="4" fill="#fff"/>
+  </clipPath>
+  <g clip-path="url(#r)">
+    <rect width="124" height="22" fill="#212020"/>
+    <rect x="124" width="104" height="22" fill="#16a34a"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+    <text x="62.0" y="15">Tier 1 Hygiene</text>
+    <text x="176.0" y="15" font-weight="bold">100% PASS</text>
+  </g>
+</svg>

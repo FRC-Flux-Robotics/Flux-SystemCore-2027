@@ -1,0 +1,404 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1040 1116" width="100%">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="8" refY="5" markerWidth="6" markerHeight="6" orient="auto-start-reverse">
+      <path d="M 0 1 L 10 5 L 0 9 z" fill="#2B7BFF" opacity="0.9"/>
+    </marker>
+  </defs>
+  <rect width="1040" height="1116" rx="10" fill="#212020" stroke="#254BA0" stroke-width="2"/>
+  <text x="24" y="30" fill="#FFFFFF" font-family="system-ui, -apple-system, sans-serif" font-size="16" font-weight="700">FLUX 10413 — Flux-SystemCore-2027 Live Class &amp; Dependency Map</text>
+  <text x="580" y="30" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="12">🔵 Pelham Royal (frc.robot.*)   ⬛ Dark Slate (frc.lib.*)   🟢 FluxFig JAR</text>
+  <line x1="20" y1="42" x2="1020" y2="42" stroke="#254BA0" stroke-width="1.5"/>
+  <text x="28" y="62" fill="#2B7BFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700">1. ROBOT & CONTAINER (frc.robot.*)</text>
+  <text x="284" y="62" fill="#2B7BFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700">2. SUBSYSTEMS, VISION & SAFETY</text>
+  <text x="540" y="62" fill="#2B7BFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700">3. HARDWARE & SIM IO (*IO)</text>
+  <text x="796" y="62" fill="#2B7BFF" font-family="system-ui, -apple-system, sans-serif" font-size="11.5" font-weight="700">4. CONFIG, CAN & LOG UTILS</text>
+  <path d="M 136.0 1000 L 136.0 854" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 1000 L 136.0 788" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 1000 L 136.0 986" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 1000 L 136.0 920" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 564.0 C 264.0 564.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 564.0 C 520.0 564.0, 520.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 564.0 C 520.0 564.0, 520.0 300.0, 792 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 630.0 C 264.0 630.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 828.0 C 264.0 828.0, 264.0 432.0, 280 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 762.0 C 264.0 762.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 762.0 C 264.0 762.0, 264.0 432.0, 280 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 762.0 C 264.0 762.0, 264.0 498.0, 280 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 696.0 C 264.0 696.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 696.0 C 264.0 696.0, 264.0 366.0, 280 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 960.0 C 264.0 960.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 960.0 C 520.0 960.0, 520.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 960.0 C 264.0 960.0, 264.0 630.0, 280 630.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 894.0 C 264.0 894.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 894.0 C 520.0 894.0, 520.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 894.0 C 264.0 894.0, 264.0 630.0, 280 630.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 894.0 C 264.0 894.0, 264.0 366.0, 280 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 894.0 C 264.0 894.0, 264.0 762.0, 280 762.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 128 L 392.0 670" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 102.0 C 648.0 102.0, 648.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 102.0 C 520.0 102.0, 520.0 300.0, 536 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 128 L 392.0 142" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 102.0 C 520.0 102.0, 520.0 102.0, 536 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 128 L 392.0 274" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 102.0 C 648.0 102.0, 648.0 366.0, 792 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 128 L 392.0 208" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 128 L 392.0 604" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 340 L 648.0 326" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 366.0 C 520.0 366.0, 520.0 300.0, 504 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 366.0 C 776.0 366.0, 776.0 498.0, 792 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 366.0 C 776.0 366.0, 776.0 564.0, 792 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 142 L 392.0 128" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 168.0 C 520.0 168.0, 520.0 102.0, 536 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 208 L 648.0 128" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 234.0 C 520.0 234.0, 520.0 234.0, 504 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 168.0 C 520.0 168.0, 520.0 102.0, 504 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 142 L 648.0 128" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 168.0 C 520.0 168.0, 520.0 300.0, 504 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 168.0 C 776.0 168.0, 776.0 498.0, 792 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 168.0 C 776.0 168.0, 776.0 564.0, 792 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 168.0 C 520.0 168.0, 520.0 234.0, 504 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 300.0 C 648.0 300.0, 648.0 564.0, 792 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 630.0 C 648.0 630.0, 648.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 802 L 648.0 722" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 828.0 C 392.0 828.0, 392.0 366.0, 248 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 736 L 648.0 722" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 762.0 C 776.0 762.0, 776.0 498.0, 792 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 762.0 C 776.0 762.0, 776.0 564.0, 792 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 432.0 C 648.0 432.0, 648.0 234.0, 792 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 432.0 C 520.0 432.0, 520.0 696.0, 536 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 524 L 392.0 670" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 498.0 C 648.0 498.0, 648.0 234.0, 792 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 498.0 C 520.0 498.0, 520.0 696.0, 536 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 792 168.0 C 520.0 168.0, 520.0 894.0, 248 894.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 904.0 274 L 904.0 260" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 904.0 340 L 904.0 194" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 792 432.0 C 520.0 432.0, 520.0 366.0, 248 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 392.0 392 L 392.0 670" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 366.0 C 648.0 366.0, 648.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 366.0 C 520.0 366.0, 520.0 432.0, 536 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 432.0 C 520.0 432.0, 520.0 762.0, 504 762.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 498.0 C 776.0 498.0, 776.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 472 L 648.0 458" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 538 L 648.0 458" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 648.0 604 L 648.0 458" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 536 630.0 C 520.0 630.0, 520.0 762.0, 504 762.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 128 L 136.0 142" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 168.0 C 520.0 168.0, 520.0 630.0, 792 630.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 168.0 C 520.0 168.0, 520.0 696.0, 792 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 168.0 C 520.0 168.0, 520.0 498.0, 792 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 194 L 136.0 208" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 194 L 136.0 274" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 894.0, 536 894.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 1000" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 538" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 604" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 696.0, 280 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 520.0 234.0, 520.0 168.0, 792 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 300.0, 536 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 366.0, 536 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 802" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 520.0 234.0, 520.0 234.0, 792 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 696.0, 536 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 828.0, 536 828.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 762.0, 536 762.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 102.0, 536 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 234.0, 536 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 168.0, 536 168.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 520.0 234.0, 520.0 300.0, 792 300.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 736" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 432.0, 280 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 670" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 208 L 136.0 194" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 274" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 934" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 406" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 340" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 234.0, 280 234.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 498.0, 280 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 520.0 234.0, 520.0 432.0, 792 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 264.0 234.0, 264.0 366.0, 280 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 432.0, 536 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 498.0, 536 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 564.0, 536 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 392.0 234.0, 392.0 630.0, 536 630.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 260 L 136.0 868" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 366.0 C 264.0 366.0, 264.0 564.0, 280 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 366.0 C 264.0 366.0, 264.0 696.0, 280 696.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 366.0 C 264.0 366.0, 264.0 432.0, 280 432.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 366.0 C 264.0 366.0, 264.0 498.0, 280 498.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 432.0 C 264.0 432.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 458 L 136.0 604" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 432.0 C 520.0 432.0, 520.0 366.0, 792 366.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 406 L 136.0 392" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 498.0 C 264.0 498.0, 264.0 102.0, 280 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 524 L 136.0 604" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 498.0 C 264.0 498.0, 264.0 564.0, 280 564.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 472 L 136.0 458" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 136.0 472 L 136.0 392" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 234.0 C 648.0 234.0, 648.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 828.0 C 776.0 828.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 762.0 C 776.0 762.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 432.0 C 648.0 432.0, 648.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 498.0 C 648.0 498.0, 648.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 894.0 C 776.0 894.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 504 366.0 C 648.0 366.0, 648.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 432.0 C 776.0 432.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 498.0 C 776.0 498.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 564.0 C 776.0 564.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 760 630.0 C 776.0 630.0, 776.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 168.0 C 520.0 168.0, 520.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 234.0 C 520.0 234.0, 520.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 300.0 C 520.0 300.0, 520.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <path d="M 248 498.0 C 520.0 498.0, 520.0 102.0, 792 102.0" fill="none" stroke="#2B7BFF" stroke-width="1.6" stroke-opacity="0.55" marker-end="url(#arrow)"/>
+  <g transform="translate(24, 76)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Main</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot · 12L</text>
+  </g>
+  <g transform="translate(24, 142)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Robot</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot · 153L</text>
+  </g>
+  <g transform="translate(24, 208)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">RobotContainer</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot · 486L</text>
+  </g>
+  <g transform="translate(24, 274)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">RobotIdentity</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot · 40L</text>
+  </g>
+  <g transform="translate(24, 340)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Superstructure</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot · 177L</text>
+  </g>
+  <g transform="translate(24, 406)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">StudentAutoRoutines</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot.autos · 280L</text>
+  </g>
+  <g transform="translate(24, 472)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">StudentExercises</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot.exercises · 237L</text>
+  </g>
+  <g transform="translate(24, 538)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">DriveCommands</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 215L</text>
+  </g>
+  <g transform="translate(24, 604)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">DriveToPose</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 115L</text>
+  </g>
+  <g transform="translate(24, 670)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PreMatchCalibrator</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 139L</text>
+  </g>
+  <g transform="translate(24, 736)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PitSystemCheckCmd</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 111L</text>
+  </g>
+  <g transform="translate(24, 802)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">HardStopHomingCmd</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 104L</text>
+  </g>
+  <g transform="translate(24, 868)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ZeroPriorBootstrapCmd</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 255L</text>
+  </g>
+  <g transform="translate(24, 934)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ShopStressSuiteCmd</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 122L</text>
+  </g>
+  <g transform="translate(24, 1000)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Blitz15MinCmd</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.commands · 150L</text>
+  </g>
+  <g transform="translate(280, 76)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Drive</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 338L</text>
+  </g>
+  <g transform="translate(280, 142)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Module</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 97L</text>
+  </g>
+  <g transform="translate(280, 208)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">SwerveConfig</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 178L</text>
+  </g>
+  <g transform="translate(280, 274)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PhoenixOdometryThread</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 180L</text>
+  </g>
+  <g transform="translate(280, 340)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">Vision</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 193L</text>
+  </g>
+  <g transform="translate(280, 406)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PositionMechanism</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.mechanism · 120L</text>
+  </g>
+  <g transform="translate(280, 472)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VelocityMechanism</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.mechanism · 113L</text>
+  </g>
+  <g transform="translate(280, 538)">
+    <rect width="224" height="52" rx="7" fill="#254BA0" stroke="#2B7BFF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ElevatorArmKinematics</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.robot.mechanisms · 61L</text>
+  </g>
+  <g transform="translate(280, 604)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VirtualGeofence</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 125L</text>
+  </g>
+  <g transform="translate(280, 670)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">FaultSupervisor</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.safety · 172L</text>
+  </g>
+  <g transform="translate(280, 736)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ZeroPriorBootstrapSolver</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 95L</text>
+  </g>
+  <g transform="translate(536, 76)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ModuleIO</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 101L</text>
+  </g>
+  <g transform="translate(536, 142)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ModuleIOTalonFX</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 299L</text>
+  </g>
+  <g transform="translate(536, 208)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">ModuleIOSim</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 144L</text>
+  </g>
+  <g transform="translate(536, 274)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">GyroIO</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 60L</text>
+  </g>
+  <g transform="translate(536, 340)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">GyroIOPigeon2</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.drive · 105L</text>
+  </g>
+  <g transform="translate(536, 406)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VisionIO</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 139L</text>
+  </g>
+  <g transform="translate(536, 472)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VisionIOLimelightSystemCore</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 154L</text>
+  </g>
+  <g transform="translate(536, 538)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VisionIOPhotonVision</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 107L</text>
+  </g>
+  <g transform="translate(536, 604)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VisionIOSim</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.vision · 133L</text>
+  </g>
+  <g transform="translate(536, 670)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">MechanismIO</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.mechanism · 54L</text>
+  </g>
+  <g transform="translate(536, 736)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">MechanismIOTalonFX</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.mechanism · 241L</text>
+  </g>
+  <g transform="translate(536, 802)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">MechanismIOSim</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.mechanism · 221L</text>
+  </g>
+  <g transform="translate(536, 868)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">BatteryIO</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.safety · 514L</text>
+  </g>
+  <g transform="translate(792, 76)">
+    <rect width="224" height="52" rx="7" fill="#0D6E52" stroke="#10B981" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">FluxFig</text>
+    <text x="12" y="39" fill="#A7F3D0" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.fluxfig (JAR) · 340L</text>
+  </g>
+  <g transform="translate(792, 142)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">FieldPositions</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 276L</text>
+  </g>
+  <g transform="translate(792, 208)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">LoggedTunableNumber</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 110L</text>
+  </g>
+  <g transform="translate(792, 274)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PiecewiseSensitivity</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 90L</text>
+  </g>
+  <g transform="translate(792, 340)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">SafeAutoBuilder</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 602L</text>
+  </g>
+  <g transform="translate(792, 406)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">VirtualBatterySim</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 99L</text>
+  </g>
+  <g transform="translate(792, 472)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PhoenixSignals</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 100L</text>
+  </g>
+  <g transform="translate(792, 538)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">PhoenixUtil</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 34L</text>
+  </g>
+  <g transform="translate(792, 604)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">LogFileManager</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 183L</text>
+  </g>
+  <g transform="translate(792, 670)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">LoggedTracer</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 22L</text>
+  </g>
+  <g transform="translate(792, 736)">
+    <rect width="224" height="52" rx="7" fill="#2B303A" stroke="#BFBFBF" stroke-width="1.6"/>
+    <text x="12" y="21" fill="#FFFFFF" font-family="ui-monospace, SFMono-Regular, monospace" font-size="12.5" font-weight="700">BackTo2026Translator</text>
+    <text x="12" y="39" fill="#DEDEDE" font-family="system-ui, -apple-system, sans-serif" font-size="11">frc.lib.util · 128L</text>
+  </g>
+</svg>

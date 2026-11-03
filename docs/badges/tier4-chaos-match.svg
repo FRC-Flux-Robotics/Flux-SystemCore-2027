@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="309" height="22" viewBox="0 0 309 22" role="img" aria-label="150s Chaos Match: Vmin 8.92V | 80ms Q">
+  <clipPath id="r">
+    <rect width="309" height="22" rx="4" fill="#fff"/>
+  </clipPath>
+  <g clip-path="url(#r)">
+    <rect width="139" height="22" fill="#212020"/>
+    <rect x="139" width="170" height="22" fill="#16a34a"/>
+  </g>
+  <g fill="#fff" text-anchor="middle" font-family="DejaVu Sans,Verdana,Geneva,sans-serif" font-size="11">
+    <text x="69.5" y="15">150s Chaos Match</text>
+    <text x="224.0" y="15" font-weight="bold">Vmin 8.92V | 80ms Q</text>
+  </g>
+</svg>

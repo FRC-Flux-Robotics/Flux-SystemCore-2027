@@ -1,0 +1,9 @@
+robot,mechanism,motorId,canBus,statorLimitAmps,supplyLimitAmps,slipCurrentAmps,gravityType,kP,kI,kD,kS,kV,kA,kG,minPosRot,maxPosRot,followerMotorId,invertFollower,motorInverted,gearRatio
+COMP_2027,SwerveDriveFL,1,can_s0,60.0,40.0,60.0,NONE,0.22,0.0,0.0,0.14,0.12,0.015,0.0,-10000.0,10000.0,-1,false,false,6.3947
+COMP_2027,ElevatorLeader,10,can_s2,60.0,40.0,60.0,ELEVATOR_STATIC,2.40,0.0,0.08,0.18,0.115,0.012,0.38,0.0,48.5,11,false,false,1.0
+COMP_2027,ArmPivot,12,can_s2,50.0,35.0,50.0,ARM_COSINE,3.10,0.0,0.10,0.15,0.420,0.020,0.45,-0.35,0.40,-1,false,false,1.0
+COMP_2027,IntakeRoller,14,can_s2,50.0,35.0,50.0,NONE,0.28,0.0,0.0,0.16,0.120,0.012,0.0,-10000.0,10000.0,-1,false,false,1.0
+FUEL,SwerveDriveFL,1,Drivetrain,60.0,40.0,60.0,NONE,0.22,0.0,0.0,0.14,0.12,0.015,0.0,-10000.0,10000.0,-1,false,false,6.3947
+CORAL,SwerveDriveFL,1,CANdace,60.0,40.0,60.0,NONE,0.22,0.0,0.0,0.14,0.12,0.015,0.0,-10000.0,10000.0,-1,false,false,6.3947
+PRACTICE_2027,SwerveDriveFL,1,can_s0,60.0,40.0,60.0,NONE,0.22,0.0,0.0,0.14,0.12,0.015,0.0,-10000.0,10000.0,-1,false,false,6.3947
+CHASSIS_3,SwerveDriveFL,1,Drivetrain,60.0,40.0,60.0,NONE,0.22,0.0,0.0,0.14,0.12,0.015,0.0,-10000.0,10000.0,-1,false,false,6.3947

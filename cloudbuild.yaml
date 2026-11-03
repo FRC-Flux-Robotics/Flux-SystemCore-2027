@@ -1,0 +1,106 @@
+# GCP Cloud Build Pipeline: Tier 1-5 Headless WPILib + CTRE Phoenix 6 C++ Simulation & GitHub Precision Gate
+#
+# Run manually from terminal (zero extra flags needed):
+#   gcloud builds submit . \
+#     --config=cloudbuild.yaml
+
+steps:
+  # Step 1: Restore cached Gradle/WPILib/CTRE Maven & JNI cache from gs://btvaroska/frc-10413/gradle-cache/
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: "restore-gradle-cache"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        mkdir -p /workspace/.gradle-cache /workspace/libs /workspace/tools
+        PYTHON_BIN="$$(command -v python3 || gcloud info --format='value(basic.python_location)')"
+        "$${PYTHON_BIN}" ./scripts/generate_class_map.py
+        if gcloud storage ls gs://btvaroska/frc-10413/libs/fluxfig-latest.jar >/dev/null 2>&1; then
+          echo "Pulling latest FluxFig library from gs://btvaroska/frc-10413/libs/fluxfig-latest.jar..."
+          gcloud storage cp gs://btvaroska/frc-10413/libs/fluxfig-latest.jar /workspace/libs/fluxfig-1.0.0.jar
+        fi
+        if gcloud storage ls gs://btvaroska/frc-10413/tools/flux-processor-latest.jar >/dev/null 2>&1; then
+          echo "Pulling standalone FluxProcessor utility from gs://btvaroska/frc-10413/tools/flux-processor-latest.jar..."
+          gcloud storage cp gs://btvaroska/frc-10413/tools/flux-processor-latest.jar /workspace/tools/flux-processor.jar
+        fi
+        if gcloud storage ls gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
+          echo "Restoring cached WPILib & CTRE Phoenix 6 JNI libraries from GCS..."
+          gcloud storage cp gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz /workspace/gradle-cache-restored.tar.gz
+          tar -xzf /workspace/gradle-cache-restored.tar.gz -C /workspace/.gradle-cache
+          rm -f /workspace/gradle-cache-restored.tar.gz
+          touch /workspace/.gradle-cache-restored
+        else
+          echo "No existing Gradle cache in GCS; will populate on this run."
+        fi
+
+  # Step 2: Run Tier 1 (Hygiene, Student Docs & BackTo2026), Tier 2 (Solvers), Tier 3 (CTRE TalonFXSimState C++ Sim), Full renderAuto Pipeline & Build .fluxpkg.zip
+  - name: "eclipse-temurin:17-jdk-jammy"
+    id: "run-tier1-2-3-and-package"
+    env:
+      - "GRADLE_USER_HOME=/workspace/.gradle-cache"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -euo pipefail
+        if ! command -v ffmpeg >/dev/null 2>&1; then
+          apt-get update -qq && apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null 2>&1 || true
+        fi
+        chmod +x ./gradlew
+        ./gradlew updateStudentDocs backTo2026 test renderAuto buildFluxPkg -Pchannel=STABLE --no-daemon
+        if [ ! -f /workspace/.gradle-cache-restored ]; then
+          tar --warning=no-file-changed -czf /workspace/gradle-cache.tar.gz -C /workspace/.gradle-cache . || true
+        fi
+
+  # Step 3: Post Precision Scorecard to Terminal/GitHub, Save Gradle Cache & Publish Artifacts to gs://btvaroska/frc-10413/
+  - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
+    id: "publish-precision-and-packages-to-gcs"
+    env:
+      - "COMMIT_SHA=${COMMIT_SHA}"
+      - "BRANCH_NAME=${BRANCH_NAME}"
+      - "GH_REPO=${_GH_REPO}"
+    entrypoint: "bash"
+    args:
+      - "-c"
+      - |
+        set -euo pipefail
+        if [ -z "$${GITHUB_TOKEN:-}" ] && gcloud secrets versions access latest --secret=github-status-pat >/dev/null 2>&1; then
+          export GITHUB_TOKEN="$$(gcloud secrets versions access latest --secret=github-status-pat)"
+        fi
+        PYTHON_BIN="$$(command -v python3 || gcloud info --format='value(basic.python_location)')"
+        "$${PYTHON_BIN}" scripts/post_precision_status.py
+        source build/git-resolved.env
+        if [ -f /workspace/gradle-cache.tar.gz ] && ! gcloud storage ls gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
+          echo "Saving WPILib & CTRE JNI Gradle cache to gs://btvaroska/frc-10413/gradle-cache/..."
+          gcloud storage cp /workspace/gradle-cache.tar.gz gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz
+        fi
+        for DEST in "gs://btvaroska/frc-10413/builds/$${SHORT_SHA}" "gs://btvaroska/frc-10413/builds/latest"; do
+          gcloud storage cp build/precision-scorecard.json "$${DEST}/precision-scorecard.json"
+          gcloud storage cp build/precision-scorecard.txt "$${DEST}/precision-scorecard.txt"
+          gcloud storage cp build/precision-scorecard.html "$${DEST}/precision-scorecard.html"
+          gcloud storage cp build/packages/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip "$${DEST}/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
+          gcloud storage cp build/packages/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip "$${DEST}/STABLE_v2027.1.0_fluxpkg.zip"
+          gcloud storage cp STUDENTS.md "$${DEST}/STUDENTS.md"
+          gcloud storage cp STUDENT-CHANGELOG.md "$${DEST}/STUDENT-CHANGELOG.md"
+          gcloud storage cp docs/class-map.html "$${DEST}/class-map.html"
+          gcloud storage cp docs/class-map.svg "$${DEST}/class-map.svg"
+          if [ -f build/auto-sim/student-auto.html ]; then
+            gcloud storage cp build/auto-sim/student-auto.html "$${DEST}/student-auto.html"
+            gcloud storage cp build/auto-sim/student-auto-frames.json "$${DEST}/student-auto-frames.json"
+          fi
+          if [ -f build/auto-sim/student-auto.mp4 ]; then
+            gcloud storage cp build/auto-sim/student-auto.mp4 "$${DEST}/student-auto.mp4"
+          fi
+        done
+        gcloud storage rsync --recursive build/badges "gs://btvaroska/frc-10413/badges/$${BRANCH}"
+        echo "================================================================================"
+        echo " Published Precision Scorecard & Packages to:"
+        echo "   gs://btvaroska/frc-10413/builds/$${SHORT_SHA}/precision-scorecard.html"
+        echo "   gs://btvaroska/frc-10413/builds/$${SHORT_SHA}/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
+        echo "================================================================================"
+
+substitutions:
+  _GH_REPO: "FRC-Flux-Robotics/Flux-SystemCore-2027"
+
+options:
+  machineType: "E2_HIGHCPU_8"
