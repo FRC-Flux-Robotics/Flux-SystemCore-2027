@@ -291,17 +291,21 @@ public final class SafeAutoBuilder {
       Consumer<ChassisSpeeds> robotRelativeVelocityConsumer) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
-      List<Pose2d> poses = path.getPathPoses();
+      String rawJson = readPathJson(pathName);
+      boolean localOrigin = isLocalOriginPath(rawJson);
+
+      List<Pose2d> poses = transformPathPosesForActiveSystem(path.getPathPoses(), localOrigin);
       double maxVel = path.getGlobalConstraints().maxVelocityMPS();
       double maxAccel = path.getGlobalConstraints().maxAccelerationMPSSq();
-      Rotation2d endRotation = path.getGoalEndState().rotation();
-      Rotation2d startRotation =
+      Rotation2d endRotation =
+          transformRotationForActiveSystem(path.getGoalEndState().rotation(), localOrigin);
+      Rotation2d rawStartRotation =
           path.getStartingHolonomicPose().map(Pose2d::getRotation).orElse(Rotation2d.kZero);
+      Rotation2d startRotation = transformRotationForActiveSystem(rawStartRotation, localOrigin);
 
-      String rawJson = readPathJson(pathName);
       int numSegments = Math.max(1, countWaypoints(rawJson) - 1);
       List<PathRotationStop> rotStops =
-          parseRotationStops(rawJson, numSegments, startRotation, endRotation);
+          parseRotationStops(rawJson, numSegments, startRotation, endRotation, localOrigin);
       List<PathEventStop> eventStops = parseEventStops(rawJson);
 
       Command rawCmd =
@@ -336,12 +340,15 @@ public final class SafeAutoBuilder {
   public static Optional<Pose2d> getPathStartingPose(String pathName) {
     try {
       PathPlannerPath path = PathPlannerPath.fromPathFile(pathName);
+      boolean localOrigin = isLocalOriginPath(readPathJson(pathName));
       Optional<Pose2d> holonomicStart = path.getStartingHolonomicPose();
       if (holonomicStart.isPresent()) {
-        return holonomicStart;
+        return Optional.of(transformPoseForActiveSystem(holonomicStart.get(), localOrigin));
       }
       List<Pose2d> poses = path.getPathPoses();
-      return poses.isEmpty() ? Optional.empty() : Optional.of(poses.get(0));
+      return poses.isEmpty()
+          ? Optional.empty()
+          : Optional.of(transformPoseForActiveSystem(poses.get(0), localOrigin));
     } catch (Exception e) {
       return Optional.empty();
     }
@@ -550,8 +557,43 @@ public final class SafeAutoBuilder {
     return Math.max(2, count);
   }
 
+  private static final Pattern LOCAL_ORIGIN_FOLDER_PATTERN =
+      Pattern.compile("\"folder\"\\s*:\\s*\"LocalOrigin\"");
+
+  private static boolean isLocalOriginPath(String json) {
+    return json != null && LOCAL_ORIGIN_FOLDER_PATTERN.matcher(json).find();
+  }
+
+  private static Pose2d transformPoseForActiveSystem(Pose2d wallBluePose, boolean localOrigin) {
+    return localOrigin ? wallBluePose : FieldPositions.fromWallBlue(wallBluePose);
+  }
+
+  private static Rotation2d transformRotationForActiveSystem(
+      Rotation2d wallBlueRot, boolean localOrigin) {
+    if (localOrigin || FieldPositions.getCoordinateSystem() == CoordinateSystem.WALL_BLUE_2026) {
+      return wallBlueRot;
+    }
+    return wallBlueRot.plus(Rotation2d.kPi);
+  }
+
+  private static List<Pose2d> transformPathPosesForActiveSystem(
+      List<Pose2d> rawPoses, boolean localOrigin) {
+    if (localOrigin || FieldPositions.getCoordinateSystem() == CoordinateSystem.WALL_BLUE_2026) {
+      return rawPoses;
+    }
+    List<Pose2d> transformed = new ArrayList<>(rawPoses.size());
+    for (Pose2d pose : rawPoses) {
+      transformed.add(FieldPositions.fromWallBlue(pose));
+    }
+    return transformed;
+  }
+
   private static List<PathRotationStop> parseRotationStops(
-      String json, int numSegments, Rotation2d startRot, Rotation2d endRot) {
+      String json,
+      int numSegments,
+      Rotation2d startRot,
+      Rotation2d endRot,
+      boolean localOrigin) {
     List<PathRotationStop> stops = new ArrayList<>();
     stops.add(new PathRotationStop(0.0, startRot));
     Pattern p =
@@ -561,7 +603,9 @@ public final class SafeAutoBuilder {
     while (m.find()) {
       double pos = Double.parseDouble(m.group(1));
       double deg = Double.parseDouble(m.group(2));
-      stops.add(new PathRotationStop(pos, Rotation2d.fromDegrees(deg)));
+      stops.add(
+          new PathRotationStop(
+              pos, transformRotationForActiveSystem(Rotation2d.fromDegrees(deg), localOrigin)));
     }
     stops.add(new PathRotationStop(numSegments, endRot));
     return stops;

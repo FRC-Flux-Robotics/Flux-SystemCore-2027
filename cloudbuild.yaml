@@ -47,12 +47,17 @@ steps:
           apt-get update -qq && apt-get install -y -qq --no-install-recommends ffmpeg >/dev/null 2>&1 || true
         fi
         chmod +x ./gradlew
-        ./gradlew updateStudentDocs backTo2026 test renderAuto buildFluxPkg -Pchannel=STABLE --no-daemon
-        if [ ! -f /workspace/.gradle-cache-restored ]; then
+        mkdir -p build
+        set +e
+        ./gradlew updateStudentDocs spotlessCheck backTo2026 test renderAuto buildFluxPkg -Pchannel=STABLE --no-daemon
+        GRADLE_RC=$$?
+        set -e
+        echo "$${GRADLE_RC}" > build/gradle-exit-code.txt
+        if [ "$${GRADLE_RC}" -eq 0 ] && [ ! -f /workspace/.gradle-cache-restored ]; then
           tar --warning=no-file-changed -czf /workspace/gradle-cache.tar.gz -C /workspace/.gradle-cache . || true
         fi
 
-  # Step 3: Post Precision Scorecard to Terminal/GitHub, Save Gradle Cache & Publish Artifacts to gs://btvaroska/frc-10413/
+  # Step 3: Post Precision Scorecard to Terminal/GitHub (including red builds), Save Gradle Cache & Publish Passing Artifacts to gs://btvaroska/frc-10413/
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     id: "publish-precision-and-packages-to-gcs"
     env:
@@ -68,18 +73,32 @@ steps:
           export GITHUB_TOKEN="$$(gcloud secrets versions access latest --secret=github-status-pat)"
         fi
         PYTHON_BIN="$$(command -v python3 || gcloud info --format='value(basic.python_location)')"
+        set +e
         "$${PYTHON_BIN}" scripts/post_precision_status.py
+        STATUS_RC=$$?
+        set -e
+        GRADLE_RC="$$(cat build/gradle-exit-code.txt 2>/dev/null || echo 1)"
+        if [ "$${GRADLE_RC}" -ne 0 ] || [ "$${STATUS_RC}" -ne 0 ]; then
+          echo "ERROR: Verification failed (gradle_rc=$${GRADLE_RC}, status_rc=$${STATUS_RC}); skipping GCS publish." >&2
+          exit "$${GRADLE_RC:-1}"
+        fi
         source build/git-resolved.env
         if [ -f /workspace/gradle-cache.tar.gz ] && ! gcloud storage ls gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
           echo "Saving WPILib & CTRE JNI Gradle cache to gs://btvaroska/frc-10413/gradle-cache/..."
           gcloud storage cp /workspace/gradle-cache.tar.gz gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz
         fi
+        PKG_ZIP="$$(find build/packages -maxdepth 1 -name '*_systemcore-2027_fluxpkg.zip' | head -n 1)"
+        PKG_ALIAS="$$(find build/packages -maxdepth 1 -name '*_v2027.1.0_fluxpkg.zip' | head -n 1)"
         for DEST in "gs://btvaroska/frc-10413/builds/$${SHORT_SHA}" "gs://btvaroska/frc-10413/builds/latest"; do
           gcloud storage cp build/precision-scorecard.json "$${DEST}/precision-scorecard.json"
           gcloud storage cp build/precision-scorecard.txt "$${DEST}/precision-scorecard.txt"
           gcloud storage cp build/precision-scorecard.html "$${DEST}/precision-scorecard.html"
-          gcloud storage cp build/packages/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip "$${DEST}/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
-          gcloud storage cp build/packages/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip "$${DEST}/STABLE_v2027.1.0_fluxpkg.zip"
+          if [ -n "$${PKG_ZIP}" ] && [ -f "$${PKG_ZIP}" ]; then
+            gcloud storage cp "$${PKG_ZIP}" "$${DEST}/$$(basename "$${PKG_ZIP}")"
+          fi
+          if [ -n "$${PKG_ALIAS}" ] && [ -f "$${PKG_ALIAS}" ]; then
+            gcloud storage cp "$${PKG_ALIAS}" "$${DEST}/$$(basename "$${PKG_ALIAS}")"
+          fi
           gcloud storage cp STUDENTS.md "$${DEST}/STUDENTS.md"
           gcloud storage cp STUDENT-CHANGELOG.md "$${DEST}/STUDENT-CHANGELOG.md"
           gcloud storage cp docs/class-map.html "$${DEST}/class-map.html"

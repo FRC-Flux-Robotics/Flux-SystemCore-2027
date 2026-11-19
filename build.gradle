@@ -174,8 +174,23 @@ tasks.register('spotlessApply') {
 
 tasks.register('spotlessCheck') {
     group = 'formatting'
-    description = 'Checks that Java source files have clean UTF-8 LF line endings.'
-    dependsOn 'spotlessApply'
+    description = 'Checks (read-only) that Java source files have clean UTF-8 LF line endings and no trailing whitespace.'
+    doLast {
+        List<String> dirty = []
+        fileTree('src').matching { include '**/*.java' }.each { File f ->
+            String original = f.getText('UTF-8')
+            String normalized = original.replace('\r\n', '\n').split('\n', -1).collect { it.replaceAll(/[ \t]+$/, '') }.join('\n')
+            if (!normalized.endsWith('\n')) {
+                normalized += '\n'
+            }
+            if (normalized != original) {
+                dirty.add(project.relativePath(f))
+            }
+        }
+        if (!dirty.isEmpty()) {
+            throw new GradleException("spotlessCheck failed on ${dirty.size()} file(s); run ./gradlew spotlessApply:\n  " + dirty.join('\n  '))
+        }
+    }
 }
 
 // Task: backTo2026 — Translates & stages the 1:1 shared core engine (frc.lib.* + libs/fluxfig-1.0.0.jar) inside build/backTo2026/Flux-RoboRIO-2027,
@@ -246,6 +261,35 @@ tasks.register('backTo2026FullRobot') {
     }
 }
 
+def resolveFluxPkgMeta = { String platform ->
+    def gitSha = "00000000"
+    def gitDirty = false
+    try {
+        def shaProc = new ProcessBuilder("git", "rev-parse", "--short=8", "HEAD").directory(projectDir).start()
+        if (shaProc.waitFor() == 0) {
+            def out = shaProc.inputStream.text.trim()
+            if (out) gitSha = out
+        }
+        def dirtyProc = new ProcessBuilder("git", "status", "--porcelain").directory(projectDir).start()
+        if (dirtyProc.waitFor() == 0) {
+            gitDirty = !dirtyProc.inputStream.text.trim().isEmpty()
+        }
+    } catch (Exception ignored) {}
+    def requestedChannel = project.findProperty('channel')?.toString()?.trim()?.toUpperCase()
+    def pkgChannel = gitDirty ? "EXPERIMENTAL" : (requestedChannel ?: "STABLE")
+    def pkgName = "${pkgChannel}_v${project.version}_${platform}"
+    return [
+        gitSha: gitSha,
+        gitDirty: gitDirty,
+        channel: pkgChannel,
+        packageName: pkgName,
+        archiveName: "${pkgName}_fluxpkg.zip",
+        aliasName: "${pkgChannel}_v${project.version}_fluxpkg.zip"
+    ]
+}
+
+def fluxPkgMeta = resolveFluxPkgMeta("systemcore-2027")
+
 // Task: generateFluxPkgManifest — Generates manifest.json required by FluxTray.jar PackageDeployer
 tasks.register('generateFluxPkgManifest') {
     group = 'flux'
@@ -254,20 +298,6 @@ tasks.register('generateFluxPkgManifest') {
     doLast {
         def manifestDir = file("$buildDir/tmp/fluxpkg")
         manifestDir.mkdirs()
-
-        def gitSha = "00000000"
-        def gitDirty = false
-        try {
-            def shaProc = new ProcessBuilder("git", "rev-parse", "--short=8", "HEAD").directory(projectDir).start()
-            if (shaProc.waitFor() == 0) {
-                def out = shaProc.inputStream.text.trim()
-                if (out) gitSha = out
-            }
-            def dirtyProc = new ProcessBuilder("git", "status", "--porcelain").directory(projectDir).start()
-            if (dirtyProc.waitFor() == 0) {
-                gitDirty = !dirtyProc.inputStream.text.trim().isEmpty()
-            }
-        } catch (Exception ignored) {}
 
         def configSha = "00000000"
         try {
@@ -288,13 +318,12 @@ tasks.register('generateFluxPkgManifest') {
             authorLaptop = java.net.InetAddress.getLocalHost().getHostName()
         } catch (Exception ignored) {}
 
-        def pkgChannel = project.findProperty('channel') ?: (gitDirty ? "EXPERIMENTAL" : "STABLE")
         def manifestJson = """{
-  "packageName": "STABLE_v2027.1.0_systemcore-2027",
+  "packageName": "${fluxPkgMeta.packageName}",
   "targetPlatform": "systemcore-2027",
-  "channel": "${pkgChannel}",
-  "gitSha": "${gitSha}",
-  "gitDirty": ${gitDirty},
+  "channel": "${fluxPkgMeta.channel}",
+  "gitSha": "${fluxPkgMeta.gitSha}",
+  "gitDirty": ${fluxPkgMeta.gitDirty},
   "configSha": "${configSha}",
   "authorLaptop": "${authorLaptop}"
 }
@@ -308,7 +337,7 @@ tasks.register('buildFluxPkg', Zip) {
     group = 'flux'
     description = 'Packages manifest.json, frcUserProgram.jar (with embedded sources), and deploy/ into .fluxpkg.zip.'
     dependsOn 'jar', 'generateFluxPkgManifest'
-    archiveFileName = "STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
+    archiveFileName = fluxPkgMeta.archiveName
     destinationDirectory = file("$buildDir/packages")
     from("$buildDir/tmp/fluxpkg/manifest.json")
     from(jar.archiveFile) {
@@ -317,11 +346,14 @@ tasks.register('buildFluxPkg', Zip) {
     from('src/main/deploy') {
         into 'deploy'
     }
+    doFirst {
+        delete fileTree(dir: destinationDirectory.get().asFile, include: '*_fluxpkg.zip')
+    }
     doLast {
         copy {
             from archiveFile.get().asFile
             into destinationDirectory.get().asFile
-            rename { "STABLE_v2027.1.0_fluxpkg.zip" }
+            rename { fluxPkgMeta.aliasName }
         }
     }
 }

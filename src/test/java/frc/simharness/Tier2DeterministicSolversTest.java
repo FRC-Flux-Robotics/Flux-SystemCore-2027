@@ -6,14 +6,18 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 import static org.junit.jupiter.api.Assertions.assertThrows;
 import static org.junit.jupiter.api.Assertions.assertTrue;
 
+import com.ctre.phoenix6.StatusCode;
 import edu.wpi.first.hal.HAL;
 import edu.wpi.first.math.geometry.Pose2d;
+import edu.wpi.first.math.geometry.Pose3d;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.geometry.Rotation3d;
 import edu.wpi.first.math.geometry.Transform3d;
 import edu.wpi.first.math.geometry.Translation2d;
 import edu.wpi.first.math.geometry.Translation3d;
 import edu.wpi.first.math.kinematics.ChassisSpeeds;
+import edu.wpi.first.math.kinematics.SwerveModuleState;
+import edu.wpi.first.wpilibj.Timer;
 import frc.lib.commands.Blitz15MinCmd;
 import frc.lib.commands.DriveCommands;
 import frc.lib.commands.DriveToPose;
@@ -24,6 +28,7 @@ import frc.lib.commands.ShopStressSuiteCmd;
 import frc.lib.commands.ZeroPriorBootstrapCmd;
 import frc.lib.drive.Drive;
 import frc.lib.drive.GyroIO;
+import frc.lib.drive.Module;
 import frc.lib.drive.ModuleIO;
 import frc.lib.drive.ModuleIOSim;
 import frc.lib.drive.PhoenixOdometryThread;
@@ -42,10 +47,14 @@ import frc.lib.util.FieldPositions.CoordinateSystem;
 import frc.lib.util.FieldPositions.FieldProfile;
 import frc.lib.util.LogFileManager;
 import frc.lib.util.LoggedTunableNumber;
+import frc.lib.util.PhoenixUtil;
 import frc.lib.util.PiecewiseSensitivity;
 import frc.lib.util.SafeAutoBuilder;
 import frc.lib.util.VirtualBatterySim;
 import frc.lib.vision.Vision;
+import frc.lib.vision.VisionIO;
+import frc.lib.vision.VisionIO.ObservationType;
+import frc.lib.vision.VisionIO.PoseObservation;
 import frc.lib.vision.VisionIOSim;
 import frc.lib.vision.ZeroPriorBootstrapSolver;
 import frc.lib.vision.ZeroPriorBootstrapSolver.PivotObservationPair;
@@ -354,51 +363,63 @@ public class Tier2DeterministicSolversTest {
         batteryIo.isHealthy(),
         "Fresh BatteryIO without CAN frames must not report healthy/connected");
 
-    int serialArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_SERIAL, 0);
-    assertEquals(BatteryIO.BFG_DEVICE_TYPE_ID, BatteryIO.extractDeviceType(serialArbId));
-    assertEquals(BatteryIO.PWF_MANUFACTURER_ID, BatteryIO.extractManufacturer(serialArbId));
-    assertEquals(BatteryIO.API_ID_SERIAL, BatteryIO.extractApiId(serialArbId));
-    assertEquals(0, BatteryIO.extractDeviceId(serialArbId));
+    int nick1ArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_NICKNAME_1, 0);
+    assertEquals(0x0A0B0F00, nick1ArbId);
+    assertEquals(BatteryIO.BFG_DEVICE_TYPE_ID, BatteryIO.extractDeviceType(nick1ArbId));
+    assertEquals(11, BatteryIO.extractManufacturer(nick1ArbId));
+    assertEquals(BatteryIO.API_ID_NICKNAME_1, BatteryIO.extractApiId(nick1ArbId));
+    assertEquals(0, BatteryIO.extractDeviceId(nick1ArbId));
 
-    // Unrelated CAN frame (CTRE TalonFX manufacturer = 4) must be ignored
-    int unrelatedArbId = BatteryIO.buildArbitrationId(2, 4, BatteryIO.API_ID_TELEMETRY, 0);
+    // Unrelated CAN frame (CTRE TalonFX manufacturer = 4 or stale mfg = 6) must be ignored
+    int unrelatedArbId = BatteryIO.buildArbitrationId(2, 4, BatteryIO.API_ID_POWER, 0);
     assertFalse(
         batteryIo.processCanFrame(
-            unrelatedArbId, BatteryIO.encodeTelemetryFrame(12.6, 10.0, 95.0, 95.0, 15.0), 8));
+            unrelatedArbId, BatteryIO.encodePowerFrame(18.5, 12.640, 420.0), 8));
     assertFalse(batteryIo.isConnected());
 
-    // Decode 29-bit API_ID_SERIAL frame ("2026-B02" -> resolves via FLUX-BAT-2026-B02 in batteries.csv)
-    byte[] serialFrame = BatteryIO.encodeSerialFrame("2026-B02");
-    assertTrue(batteryIo.processCanFrame(serialArbId, serialFrame, 8));
+    // Decode 29-bit ROB-70001 Nickname1 ("2026-B02" -> resolves via batteries.csv)
+    assertTrue(
+        batteryIo.processCanFrame(nick1ArbId, BatteryIO.encodeNickname1Frame("2026-B02"), 8));
     assertEquals("2026-B02", batteryIo.getResolvedBatteryName());
+    assertEquals(15.8, batteryIo.getInternalResistanceMilliOhms(), 1e-3);
 
-    // Decode 29-bit API_ID_TELEMETRY frame (12.640 V, 18.5 A, 96.5% SoC, 94% SoH, 15.8 mOhm)
-    int telemArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_TELEMETRY, 0);
-    byte[] telemFrame = BatteryIO.encodeTelemetryFrame(12.640, 18.5, 96.5, 94.0, 15.8);
-    assertTrue(batteryIo.processCanFrame(telemArbId, telemFrame, 8));
+    // Decode little-endian 29-bit ROB-70001 Power (18.5 A, 12.640 V, 420 mAh DoD)
+    int powerArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_POWER, 0);
+    assertEquals(0x0A0B0000, powerArbId);
+    assertTrue(
+        batteryIo.processCanFrame(
+            powerArbId, BatteryIO.encodePowerFrame(18.5, 12.640, 420.0), 8));
     double bfgDecodeErrMv = Math.abs(batteryIo.getVoltageVolts() - 12.640) * 1000.0;
     assertEquals(12.640, batteryIo.getVoltageVolts(), 1e-4);
     assertEquals(18.5, batteryIo.getCurrentAmps(), 1e-3);
-    assertEquals(96.5, batteryIo.getStateOfChargePct(), 1e-3);
+    assertEquals(420.0, batteryIo.getConsumedChargeMah(), 1e-3);
+
+    // Decode little-endian 29-bit ROB-70001 BatteryHealth (3600s, 16920 mAh -> 94%, 42 cycles)
+    int healthArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_BATTERY_HEALTH, 0);
+    assertEquals(0x0A0B0100, healthArbId);
+    assertTrue(
+        batteryIo.processCanFrame(
+            healthArbId, BatteryIO.encodeBatteryHealthFrame(3600L, 16920.0, 42), 8));
     assertEquals(94.0, batteryIo.getStateOfHealthPct(), 1e-3);
-    assertEquals(15.8, batteryIo.getInternalResistanceMilliOhms(), 1e-3);
+    assertEquals(42, batteryIo.getCycleCount());
+    assertEquals(3600L, batteryIo.getBatteryAgeSeconds());
+
+    // Decode little-endian 29-bit ROB-70001 StateOfCharge (17370 / 18000 mAh -> 96.5% SoC)
+    int socArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_STATE_OF_CHARGE, 0);
+    assertEquals(0x0A0B0700, socArbId);
+    assertTrue(
+        batteryIo.processCanFrame(
+            socArbId, BatteryIO.encodeStateOfChargeFrame(17370.0, 18000.0, 2, 224.0), 8));
+    assertEquals(96.5, batteryIo.getStateOfChargePct(), 1e-3);
     assertTrue(batteryIo.isHealthy());
 
-    // Decode 29-bit API_ID_ENERGY_EXTENDED frame (420 mAh, 10.920 V min trough, 148.5 A peak, 31.2 C)
-    int extArbId = BatteryIO.buildBfgArbitrationId(BatteryIO.API_ID_ENERGY_EXTENDED, 0);
-    byte[] extFrame = BatteryIO.encodeExtendedEnergyFrame(420.0, 10.920, 148.5, 31.2);
-    assertTrue(batteryIo.processCanFrame(extArbId, extFrame, 8));
-    assertEquals(420.0, batteryIo.getConsumedChargeMah(), 1e-3);
-    assertEquals(10.920, batteryIo.getMinVoltageVolts(), 1e-3);
-    assertEquals(148.5, batteryIo.getPeakCurrentAmps(), 1e-3);
-
-    // Online -dV/dI internal resistance fallback when sensor rInt byte is 0 across a 100A step
+    // Online -dV/dI internal resistance measurement across a 100 A step on ROB-70001 Power frames
     assertTrue(
         batteryIo.processCanFrame(
-            telemArbId, BatteryIO.encodeTelemetryFrame(12.500, 15.0, 95.0, 94.0, 0.0), 8));
+            powerArbId, BatteryIO.encodePowerFrame(15.0, 12.500, 425.0), 8));
     assertTrue(
         batteryIo.processCanFrame(
-            telemArbId, BatteryIO.encodeTelemetryFrame(10.850, 115.0, 94.5, 94.0, 0.0), 8));
+            powerArbId, BatteryIO.encodePowerFrame(115.0, 10.850, 440.0), 8));
     assertEquals(16.5, batteryIo.getInternalResistanceMilliOhms(), 0.2);
 
     batteryIo.simulateCanReading("FLUX-BAT-2026-B01", 12.68, 97.0, 95.0, 15.8);
@@ -866,5 +887,142 @@ public class Tier2DeterministicSolversTest {
     assertTrue(
         SafeAutoBuilder.getLastCancelReason().isBlank() && maxPpX > 0.9,
         "2-path PathPlanner example must pass SafeAutoBuilder preflight and follow both paths");
+  }
+
+  @Test
+  public void testBomRadarOriginConversionIdentityBudgetVisionAndDeadband() throws Exception {
+    assertEquals(8.069, FieldPositions.FIELD_WIDTH_METERS, 1e-6);
+
+    CoordinateSystem savedCoord = FieldPositions.getCoordinateSystem();
+    try {
+      FieldPositions.setCoordinateSystem(CoordinateSystem.CENTER_RED_2027);
+      Pose2d shopStart = SafeAutoBuilder.getPathStartingPose("Shop_Center_Shuttle").orElseThrow();
+      assertEquals(0.0, shopStart.getX(), 1e-4, "LocalOrigin shop path must stay at (0,0)");
+      assertEquals(0.0, shopStart.getY(), 1e-4);
+
+      Pose2d compHubStart = SafeAutoBuilder.getPathStartingPose("Hub to Depot").orElseThrow();
+      Pose2d expectedCompStart =
+          FieldPositions.wallBlueToCenterRed(new Pose2d(3.10, 4.05, Rotation2d.kZero));
+      assertEquals(expectedCompStart.getX(), compHubStart.getX(), 1e-3);
+      assertEquals(expectedCompStart.getY(), compHubStart.getY(), 1e-3);
+      assertEquals(
+          Math.PI, Math.abs(compHubStart.getRotation().getRadians()), 1e-3);
+    } finally {
+      FieldPositions.setCoordinateSystem(savedCoord);
+    }
+
+    Path tmpDir = Files.createTempDirectory("flux-id-test");
+    try {
+      Path devSerial = tmpDir.resolve("serial-number");
+      Path deployTag = tmpDir.resolve("deploy-id.txt");
+      Path persistTag = tmpDir.resolve("persist-id.txt");
+      Files.writeString(devSerial, "PRACTICE_2027\0");
+      assertEquals(
+          RobotIdentity.PRACTICE_2027,
+          RobotIdentity.detect("", "", devSerial, deployTag, persistTag));
+      Files.deleteIfExists(devSerial);
+      Files.writeString(persistTag, "PRACTICE_2027\n");
+      assertEquals(
+          RobotIdentity.PRACTICE_2027,
+          RobotIdentity.detect("ABCDEF", "", devSerial, deployTag, persistTag));
+    } finally {
+      Files.deleteIfExists(tmpDir.resolve("serial-number"));
+      Files.deleteIfExists(tmpDir.resolve("deploy-id.txt"));
+      Files.deleteIfExists(tmpDir.resolve("persist-id.txt"));
+      Files.deleteIfExists(tmpDir);
+    }
+
+    PhoenixUtil.resetConfigBudgetForTest(0.0);
+    int[] invocations = {0};
+    assertEquals(
+        StatusCode.TxTimeout,
+        PhoenixUtil.tryUntilOk(
+            "ExpiredBudgetCheck",
+            () -> {
+              invocations[0]++;
+              return StatusCode.OK;
+            },
+            5));
+    assertEquals(0, invocations[0], "Exhausted CanConfigBudget must skip blocking retries");
+    assertTrue(PhoenixUtil.getSkippedConfigCallCount() >= 1);
+    PhoenixUtil.resetConfigBudgetForTest();
+
+    // Vision motion gates, finite guard, tilt trust scaling, and quadratic N^2 covariance
+    FluxFig fig = new FluxFig(Paths.get("src/main/deploy/configs"));
+    CameraSpec[] cams = new CameraSpec[] {fig.getCamerasForRobot("COMP_2027").get(0)};
+    final double[] recordedLinearStd = {Double.NaN};
+    VisionIO stubIo =
+        new VisionIO() {
+          @Override
+          public void updateInputs(VisionIOInputs inputs) {
+            double ts = Timer.getFPGATimestamp();
+            inputs.connected = true;
+            inputs.tagIds = new int[] {1, 2};
+            inputs.poseObservations =
+                new PoseObservation[] {
+                  new PoseObservation(
+                      ts,
+                      new Pose3d(Double.NaN, 0.0, 0.0, Rotation3d.kZero),
+                      0.05,
+                      2,
+                      2.0,
+                      ObservationType.MEGATAG_1),
+                  new PoseObservation(
+                      ts + 0.20,
+                      new Pose3d(0.0, 0.0, 0.0, Rotation3d.kZero),
+                      0.05,
+                      2,
+                      2.0,
+                      ObservationType.MEGATAG_1),
+                  new PoseObservation(
+                      ts,
+                      new Pose3d(0.0, 0.0, 0.0, Rotation3d.kZero),
+                      0.05,
+                      2,
+                      2.0,
+                      ObservationType.MEGATAG_1)
+                };
+          }
+        };
+    FieldPositions.setCoordinateSystem(CoordinateSystem.CENTER_RED_2027);
+    try {
+      Vision vision =
+          new Vision(
+              (pose, ts, std) -> recordedLinearStd[0] = std.get(0, 0), null, cams, stubIo);
+      double nowSec = Timer.getFPGATimestamp();
+      vision.recordMotionSample(2.1, 0.0, nowSec - 0.15);
+      vision.periodic();
+      assertEquals(0, vision.getAcceptedObservationCount(), "0.3s > 1.6 rad/s lookback must reject");
+
+      vision.recordMotionSample(0.1, Math.toRadians(6.0), nowSec + 0.001);
+      vision.periodic();
+      assertEquals(0, vision.getAcceptedObservationCount(), "> 5 deg tilt must reject");
+
+      Vision cleanVision =
+          new Vision(
+              (pose, ts, std) -> recordedLinearStd[0] = std.get(0, 0), null, cams, stubIo);
+      cleanVision.periodic();
+      assertEquals(1, cleanVision.getAcceptedObservationCount(), "NaN + future obs rejected; valid obs accepted");
+      assertEquals(0.01, recordedLinearStd[0], 1e-6, "0.01 * d^2 / N^2 for d=2m, N=2 must equal 0.01");
+      assertEquals(1.0, Vision.computeOdometryTiltTrustScale(Math.toRadians(5.0)), 1e-6);
+      assertEquals(0.5, Vision.computeOdometryTiltTrustScale(Math.toRadians(15.0)), 1e-6);
+      assertEquals(0.0, Vision.computeOdometryTiltTrustScale(Math.toRadians(25.0)), 1e-6);
+    } finally {
+      FieldPositions.setCoordinateSystem(savedCoord);
+    }
+
+    int[] turnCommands = {0};
+    ModuleIO spyModuleIo =
+        new ModuleIO() {
+          @Override
+          public void setTurnPosition(Rotation2d angle) {
+            turnCommands[0]++;
+          }
+        };
+    Module deadbandModule = new Module(spyModuleIo, 0, 0.05);
+    deadbandModule.runSetpoint(new SwerveModuleState(0.0, Rotation2d.fromDegrees(0.2)));
+    assertEquals(0, turnCommands[0], "<= 0.3 deg stationary micro-jitter must be ignored");
+    deadbandModule.runSetpoint(new SwerveModuleState(0.0, Rotation2d.fromDegrees(45.0)));
+    assertEquals(1, turnCommands[0], "45 deg stopWithX rotation must command steer angle");
   }
 }

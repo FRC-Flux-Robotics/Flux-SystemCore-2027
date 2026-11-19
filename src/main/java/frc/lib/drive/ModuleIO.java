@@ -20,6 +20,7 @@ public interface ModuleIO {
     public double driveSupplyCurrentAmps = 0.0;
 
     public boolean turnConnected = false;
+    public boolean usingFusedCancoder = false;
     public Rotation2d turnAbsolutePosition = Rotation2d.kZero;
     public Rotation2d turnPosition = Rotation2d.kZero;
     public double turnVelocityRadPerSec = 0.0;
@@ -41,6 +42,7 @@ public interface ModuleIO {
       table.put("DriveSupplyCurrentAmps", driveSupplyCurrentAmps);
 
       table.put("TurnConnected", turnConnected);
+      table.put("UsingFusedCancoder", usingFusedCancoder);
       table.put("TurnAbsolutePositionRad", turnAbsolutePosition.getRadians());
       table.put("TurnPositionRad", turnPosition.getRadians());
       table.put("TurnVelocityRadPerSec", turnVelocityRadPerSec);
@@ -67,6 +69,7 @@ public interface ModuleIO {
       driveSupplyCurrentAmps = table.get("DriveSupplyCurrentAmps", driveSupplyCurrentAmps);
 
       turnConnected = table.get("TurnConnected", turnConnected);
+      usingFusedCancoder = table.get("UsingFusedCancoder", usingFusedCancoder);
       turnAbsolutePosition =
           new Rotation2d(table.get("TurnAbsolutePositionRad", turnAbsolutePosition.getRadians()));
       turnPosition = new Rotation2d(table.get("TurnPositionRad", turnPosition.getRadians()));

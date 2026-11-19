@@ -3,6 +3,9 @@
 build/
 .gradle/
 output/
+ctre_sim/
+logs/
+networktables.json
 *.wpilog
 *.hoot
 .git/objects/**

@@ -332,6 +332,18 @@ public class Drive extends SubsystemBase {
     return config.maxLinearSpeedMps();
   }
 
+  public double getRollRad() {
+    return gyroInputs.rollRad;
+  }
+
+  public double getPitchRad() {
+    return gyroInputs.pitchRad;
+  }
+
+  public double getMaxTiltRad() {
+    return Math.max(Math.abs(gyroInputs.rollRad), Math.abs(gyroInputs.pitchRad));
+  }
+
   public SwerveConfig getConfig() {
     return config;
   }

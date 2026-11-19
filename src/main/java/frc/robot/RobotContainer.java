@@ -363,7 +363,8 @@ public class RobotContainer {
     vision.setRobotOrientation(
         drive.getPose().getRotation(),
         drive.getChassisSpeeds().omegaRadiansPerSecond,
-        preMatchCalibrator.isGyroSeeded());
+        preMatchCalibrator.isGyroSeeded(),
+        drive.getMaxTiltRad());
 
     double accelScale = superstructure.getSafeSwerveAccelerationScale();
     drive.setMaxAccelerationScale(accelScale);

@@ -1,6 +1,8 @@
 package frc.lib.drive;
 
+import com.ctre.phoenix6.BaseStatusSignal;
 import com.ctre.phoenix6.CANBus;
+import com.ctre.phoenix6.StatusCode;
 import com.ctre.phoenix6.StatusSignal;
 import com.ctre.phoenix6.configs.CANcoderConfiguration;
 import com.ctre.phoenix6.configs.TalonFXConfiguration;
@@ -9,6 +11,7 @@ import com.ctre.phoenix6.controls.NeutralOut;
 import com.ctre.phoenix6.controls.VelocityVoltage;
 import com.ctre.phoenix6.controls.VoltageOut;
 import com.ctre.phoenix6.hardware.CANcoder;
+import com.ctre.phoenix6.hardware.ParentDevice;
 import com.ctre.phoenix6.hardware.TalonFX;
 import com.ctre.phoenix6.signals.FeedbackSensorSourceValue;
 import com.ctre.phoenix6.signals.InvertedValue;
@@ -60,6 +63,7 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
 
   private final int driveSignalGroup;
   private final int turnSignalGroup;
+  private final boolean usingFusedCancoder;
   private final Queue<Double> drivePositionQueue;
   private final Queue<Double> turnPositionQueue;
 
@@ -92,7 +96,11 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
 
     CANcoderConfiguration cancoderCfg = new CANcoderConfiguration();
     cancoderCfg.MagnetSensor.MagnetOffset = corner.encoderOffsetRot();
-    PhoenixUtil.tryUntilOk(() -> cancoder.getConfigurator().apply(cancoderCfg, 0.100), 5);
+    PhoenixUtil.tryUntilOk(
+        "Module-" + corner.name() + "-CANcoder",
+        () ->
+            cancoder.getConfigurator().apply(cancoderCfg, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+        5);
 
     TalonFXConfiguration driveCfg = new TalonFXConfiguration();
     driveCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
@@ -112,13 +120,19 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
     driveCfg.Slot0.kS = swerveConfig.driveKs();
     driveCfg.Slot0.kV = swerveConfig.driveKv();
     driveCfg.Slot0.kA = swerveConfig.driveKa();
-    PhoenixUtil.tryUntilOk(() -> driveTalon.getConfigurator().apply(driveCfg, 0.100), 5);
+    PhoenixUtil.tryUntilOk(
+        "Module-" + corner.name() + "-Drive",
+        () ->
+            driveTalon.getConfigurator().apply(driveCfg, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+        5);
     driveTalon.getSimState().Orientation =
         invertDrive
             ? ChassisReference.Clockwise_Positive
             : ChassisReference.CounterClockwise_Positive;
     driveTalon.setPosition(0.0);
 
+    boolean proCanFdReady =
+        bus.isNetworkFD() && Boolean.TRUE.equals(turnTalon.getIsProLicensed().refresh().getValue());
     TalonFXConfiguration turnCfg = new TalonFXConfiguration();
     turnCfg.MotorOutput.NeutralMode = NeutralModeValue.Brake;
     turnCfg.MotorOutput.Inverted =
@@ -126,7 +140,10 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
             ? InvertedValue.Clockwise_Positive
             : InvertedValue.CounterClockwise_Positive;
     turnCfg.Feedback.FeedbackRemoteSensorID = corner.cancoderId();
-    turnCfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+    turnCfg.Feedback.FeedbackSensorSource =
+        proCanFdReady
+            ? FeedbackSensorSourceValue.FusedCANcoder
+            : FeedbackSensorSourceValue.RemoteCANcoder;
     turnCfg.Feedback.RotorToSensorRatio = swerveConfig.turnGearRatio();
     turnCfg.ClosedLoopGeneral.ContinuousWrap = true;
     turnCfg.CurrentLimits.StatorCurrentLimitEnable = true;
@@ -140,7 +157,26 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
     turnCfg.Slot0.StaticFeedforwardSign = StaticFeedforwardSignValue.UseClosedLoopSign;
     turnCfg.MotionMagic.MotionMagicExpo_kV = 1.5;
     turnCfg.MotionMagic.MotionMagicExpo_kA = 0.1;
-    PhoenixUtil.tryUntilOk(() -> turnTalon.getConfigurator().apply(turnCfg, 0.100), 5);
+    StatusCode turnApplyStatus =
+        PhoenixUtil.tryUntilOk(
+            "Module-" + corner.name() + "-Turn",
+            () ->
+                turnTalon
+                    .getConfigurator()
+                    .apply(turnCfg, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+            5);
+    boolean fusedApplied = proCanFdReady && turnApplyStatus.isOK();
+    if (proCanFdReady && !turnApplyStatus.isOK()) {
+      turnCfg.Feedback.FeedbackSensorSource = FeedbackSensorSourceValue.RemoteCANcoder;
+      PhoenixUtil.tryUntilOk(
+          "Module-" + corner.name() + "-TurnFallback",
+          () ->
+              turnTalon
+                  .getConfigurator()
+                  .apply(turnCfg, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+          3);
+    }
+    this.usingFusedCancoder = fusedApplied;
     turnTalon.getSimState().Orientation =
         corner.invertTurn()
             ? ChassisReference.Clockwise_Positive
@@ -158,6 +194,16 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
     turnAppliedVolts = turnTalon.getMotorVoltage();
     turnStatorCurrent = turnTalon.getStatorCurrent();
     turnSupplyCurrent = turnTalon.getSupplyCurrent();
+
+    BaseStatusSignal.setUpdateFrequencyForAll(
+        50.0,
+        driveAppliedVolts,
+        driveStatorCurrent,
+        driveSupplyCurrent,
+        turnAbsolutePosition,
+        turnAppliedVolts,
+        turnStatorCurrent,
+        turnSupplyCurrent);
 
     driveSignalGroup =
         PhoenixSignals.register(
@@ -182,20 +228,35 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
         odomThread.registerLatencyCompensatedSignal(drivePosition, driveVelocity);
     turnPositionQueue =
         odomThread.registerLatencyCompensatedSignal(turnPosition, turnVelocity);
+
+    PhoenixUtil.tryUntilOk(
+        "Module-" + corner.name() + "-OptimizeBus",
+        () -> ParentDevice.optimizeBusUtilizationForAll(driveTalon, turnTalon, cancoder),
+        3);
   }
 
   /** Reads back the applied drive motor TalonFXConfiguration registers for Tier 3 verification. */
   public TalonFXConfiguration readAppliedDriveConfig() {
     TalonFXConfiguration readback = new TalonFXConfiguration();
-    PhoenixUtil.tryUntilOk(() -> driveTalon.getConfigurator().refresh(readback, 0.100), 5);
+    PhoenixUtil.tryUntilOk(
+        "Module-ReadDriveCfg",
+        () -> driveTalon.getConfigurator().refresh(readback, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+        5);
     return readback;
   }
 
   /** Reads back the applied steer motor TalonFXConfiguration registers for Tier 3 verification. */
   public TalonFXConfiguration readAppliedTurnConfig() {
     TalonFXConfiguration readback = new TalonFXConfiguration();
-    PhoenixUtil.tryUntilOk(() -> turnTalon.getConfigurator().refresh(readback, 0.100), 5);
+    PhoenixUtil.tryUntilOk(
+        "Module-ReadTurnCfg",
+        () -> turnTalon.getConfigurator().refresh(readback, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+        5);
     return readback;
+  }
+
+  public boolean isUsingFusedCANcoder() {
+    return usingFusedCancoder;
   }
 
   public TalonFX getDriveTalon() {
@@ -260,6 +321,7 @@ public class ModuleIOTalonFX implements ModuleIO, AutoCloseable {
     inputs.driveSupplyCurrentAmps = driveSupplyCurrent.getValueAsDouble();
 
     inputs.turnConnected = PhoenixSignals.isOK(turnSignalGroup);
+    inputs.usingFusedCancoder = usingFusedCancoder;
     inputs.turnAbsolutePosition = Rotation2d.fromRotations(turnAbsolutePosition.getValueAsDouble());
     inputs.turnPosition = Rotation2d.fromRotations(turnPosition.getValueAsDouble());
     inputs.turnVelocityRadPerSec = Units.rotationsToRadians(turnVelocity.getValueAsDouble());

@@ -24,6 +24,7 @@ import frc.lib.drive.Drive;
 import frc.lib.drive.GyroIO.GyroIOInputs;
 import frc.lib.drive.GyroIOPigeon2;
 import frc.lib.drive.ModuleIOTalonFX;
+import frc.lib.drive.PhoenixOdometryThread;
 import frc.lib.drive.SwerveConfig;
 import frc.lib.drive.SwerveConfig.CornerConfig;
 import frc.lib.fluxfig.FluxFig;
@@ -31,6 +32,7 @@ import frc.lib.fluxfig.FluxFig.MechanismSpec;
 import frc.lib.mechanism.MechanismIO.MechanismIOInputs;
 import frc.lib.mechanism.MechanismIOTalonFX;
 import frc.lib.util.PhoenixSignals;
+import frc.lib.util.PhoenixUtil;
 import java.nio.file.Paths;
 import org.junit.jupiter.api.AfterAll;
 import org.junit.jupiter.api.BeforeAll;
@@ -59,12 +61,17 @@ public class Tier3CtreSimHardwareTest {
 
   @BeforeEach
   public void settleCanBusBetweenTests() throws InterruptedException {
+    PhoenixOdometryThread.getInstance().reset();
+    PhoenixSignals.reset();
+    PhoenixUtil.resetConfigBudgetForTest();
     Unmanaged.feedEnable(100);
-    Thread.sleep(100);
+    Thread.sleep(150);
   }
 
   @AfterAll
   public static void closeKeepAlive() {
+    PhoenixOdometryThread.getInstance().reset();
+    PhoenixSignals.reset();
     if (keepAliveTalon != null) {
       keepAliveTalon.close();
       keepAliveTalon = null;
@@ -268,6 +275,10 @@ public class Tier3CtreSimHardwareTest {
       assertTrue(flDriveCfg.CurrentLimits.SupplyCurrentLimitEnable);
       assertEquals(60.0, flDriveCfg.CurrentLimits.StatorCurrentLimit, 0.1);
       assertEquals(40.0, flDriveCfg.CurrentLimits.SupplyCurrentLimit, 0.1);
+      assertEquals(
+          false,
+          modFl.isUsingFusedCANcoder(),
+          "Non-FD / unlicensed CAN 2.0 rio fallback must select RemoteCANcoder instead of FusedCANcoder");
 
       // Verify left vs. right drive motor inversion and non-zero CANcoder magnet offset on hardware
       CANcoderConfiguration flCancoderCfg = new CANcoderConfiguration();

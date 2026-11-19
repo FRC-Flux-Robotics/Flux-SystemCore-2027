@@ -1,5 +1,6 @@
 package frc.lib.drive;
 
+import edu.wpi.first.math.MathUtil;
 import edu.wpi.first.math.geometry.Rotation2d;
 import edu.wpi.first.math.kinematics.SwerveModulePosition;
 import edu.wpi.first.math.kinematics.SwerveModuleState;
@@ -11,6 +12,9 @@ import org.littletonrobotics.junction.Logger;
  * odometry position array construction, and AdvantageKit logging.
  */
 public class Module {
+  public static final double STEER_DEADBAND_SPEED_MPS = 0.05;
+  public static final double STEER_ANGLE_DEADBAND_RAD = Math.toRadians(0.3);
+
   private final ModuleIO io;
   private final ModuleIOInputs inputs = new ModuleIOInputs();
   private final int index;
@@ -39,11 +43,17 @@ public class Module {
     }
   }
 
-  /** Optimizes and commands the desired state with cosine velocity scaling. */
+  /** Optimizes and commands the desired state with cosine velocity scaling and 0.3 deg steer deadband. */
   public void runSetpoint(SwerveModuleState state) {
-    state.optimize(getAngle());
-    state.cosineScale(getAngle());
+    Rotation2d currentAngle = getAngle();
+    state.optimize(currentAngle);
+    state.cosineScale(currentAngle);
     io.setDriveVelocity(state.speedMetersPerSecond / wheelRadiusMeters);
+    double angleErrRad = Math.abs(MathUtil.angleModulus(state.angle.minus(currentAngle).getRadians()));
+    if (Math.abs(state.speedMetersPerSecond) < STEER_DEADBAND_SPEED_MPS
+        && angleErrRad <= STEER_ANGLE_DEADBAND_RAD) {
+      return;
+    }
     io.setTurnPosition(state.angle);
   }
 

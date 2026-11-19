@@ -71,9 +71,17 @@ public final class PhoenixOdometryThread {
     ODOMETRY_LOCK.lock();
     try {
       PhoenixUtil.tryUntilOk(
-          () -> position.setUpdateFrequency(ODOMETRY_FREQUENCY_HZ, 0.100), 5);
+          "Odometry-PosFreq",
+          () ->
+              position.setUpdateFrequency(
+                  ODOMETRY_FREQUENCY_HZ, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+          5);
       PhoenixUtil.tryUntilOk(
-          () -> velocity.setUpdateFrequency(ODOMETRY_FREQUENCY_HZ, 0.100), 5);
+          "Odometry-VelFreq",
+          () ->
+              velocity.setUpdateFrequency(
+                  ODOMETRY_FREQUENCY_HZ, PhoenixUtil.DEFAULT_CAN_CALL_TIMEOUT_SECONDS),
+          5);
       allSignals.add(position);
       allSignals.add(velocity);
       cachedSignals = allSignals.toArray(new BaseStatusSignal[0]);

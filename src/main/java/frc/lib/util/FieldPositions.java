@@ -16,7 +16,8 @@ import org.littletonrobotics.junction.Logger;
  */
 public final class FieldPositions {
   public static final double FIELD_LENGTH_METERS = 16.541;
-  public static final double FIELD_WIDTH_METERS = 8.211;
+  /** 2026 REBUILT Welded & PathPlanner FlippingUtil exact field width (8.069 m). */
+  public static final double FIELD_WIDTH_METERS = 8.069;
   public static final double HALF_FIELD_LENGTH_METERS = FIELD_LENGTH_METERS * 0.5;
   public static final double HALF_FIELD_WIDTH_METERS = FIELD_WIDTH_METERS * 0.5;
   public static final double SHOP_LENGTH_METERS = 5.000;
@@ -259,7 +260,11 @@ public final class FieldPositions {
     return red ? Rotation2d.kPi : Rotation2d.kZero;
   }
 
-  /** Configures an {@link AprilTagFieldLayout} origin to match the active coordinate system. */
+  /**
+   * Configures an {@link AprilTagFieldLayout} origin to match the active coordinate system. When
+   * cutting over to WPILib 2027 {@code org.wpilib.fields.Field}, prefer {@code
+   * OriginPosition.kFieldCenter} for {@link CoordinateSystem#CENTER_RED_2027}.
+   */
   public static AprilTagFieldLayout configureLayoutOrigin(AprilTagFieldLayout layout) {
     if (coordinateSystem == CoordinateSystem.CENTER_RED_2027) {
       layout.setOrigin(

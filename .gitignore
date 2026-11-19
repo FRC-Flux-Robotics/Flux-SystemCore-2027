@@ -2,6 +2,9 @@
 build/
 .gradle/
 output/
+ctre_sim/
+logs/
+networktables.json
 
 # Compiled & temporary files
 *.class
