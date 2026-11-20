@@ -85,6 +85,7 @@ test {
         showCauses = true
         exceptionFormat = "short"
     }
+    outputs.upToDateWhen { false }
 }
 
 wpi.sim.addGui().defaultEnabled = true
