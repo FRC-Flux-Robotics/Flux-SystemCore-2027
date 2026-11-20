@@ -11,10 +11,10 @@ Clean-sheet 2027 master robot repository for **FRC Team 10413 (FLUX Robotics)**,
 ---
 
 ## Live Cloud Build Artifacts (`gs://infra-2008/frc-10413/`)
-* **Latest Interactive Precision Scorecard:** [`precision-scorecard.html`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/precision-scorecard.html)
-* **Latest Student Autonomous 3D Video (`COMP_2027` Empty Field):** [`student-auto.mp4`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/student-auto.mp4) | [`student-auto.html` (Interactive 3D Viewer)](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/student-auto.html)
-* **Interactive Class & Dependency Explorer:** [`docs/class-map.html`](docs/class-map.html) *(also published to [`class-map.html` on GCS](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/class-map.html))*
-* **Latest Offline Robot Package (`.fluxpkg.zip`):** [`STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip)
+* **Latest Interactive Precision Scorecard:** [`precision-scorecard.html`](https://storage.googleapis.com/infra-2008/frc-10413/builds/latest/precision-scorecard.html)
+* **Latest Student Autonomous 3D Video (`COMP_2027` Empty Field):** [`student-auto.mp4`](https://storage.googleapis.com/infra-2008/frc-10413/builds/latest/student-auto.mp4) | [`student-auto.html` (Interactive 3D Viewer)](https://storage.googleapis.com/infra-2008/frc-10413/builds/latest/student-auto.html)
+* **Interactive Class & Dependency Explorer:** [`docs/class-map.html`](docs/class-map.html) *(also published to [`class-map.html` on GCS](https://storage.googleapis.com/infra-2008/frc-10413/builds/latest/class-map.html))*
+* **Latest Offline Robot Package (`.fluxpkg.zip`):** [`STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip`](https://storage.googleapis.com/infra-2008/frc-10413/builds/latest/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip)
 * **Student Developer Guide:** [`STUDENTS.md`](STUDENTS.md) | [`STUDENT-CHANGELOG.md`](STUDENT-CHANGELOG.md)
 
 ---
