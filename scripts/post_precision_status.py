@@ -158,7 +158,7 @@ def main():
         scorecard_url = f"https://github.com/{gh_repo}/actions/runs/{gh_run_id}"
         pkg_url = f"https://github.com/{gh_repo}/actions/runs/{gh_run_id}"
     else:
-        gcs_base_url = f"https://storage.cloud.google.com/btvaroska/frc-10413/builds/{short_sha}"
+        gcs_base_url = f"https://storage.cloud.google.com/infra-2008/frc-10413/builds/{short_sha}"
         scorecard_url = f"{gcs_base_url}/precision-scorecard.html"
         pkg_url = f"{gcs_base_url}/{pkg_name}"
 

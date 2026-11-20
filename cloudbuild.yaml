@@ -1,11 +1,13 @@
 # GCP Cloud Build Pipeline: Tier 1-5 Headless WPILib + CTRE Phoenix 6 C++ Simulation & GitHub Precision Gate
 #
-# Run manually from terminal (zero extra flags needed):
+# Run manually from terminal (uses gs://infra-2008 for staging & artifacts):
 #   gcloud builds submit . \
+#     --project=infra-2008 \
+#     --gcs-source-staging-dir=gs://infra-2008/_cloudbuild/source \
 #     --config=cloudbuild.yaml
 
 steps:
-  # Step 1: Restore cached Gradle/WPILib/CTRE Maven & JNI cache from gs://btvaroska/frc-10413/gradle-cache/
+  # Step 1: Restore cached Gradle/WPILib/CTRE Maven & JNI cache from gs://infra-2008/frc-10413/gradle-cache/
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     id: "restore-gradle-cache"
     entrypoint: "bash"
@@ -15,17 +17,17 @@ steps:
         mkdir -p /workspace/.gradle-cache /workspace/libs /workspace/tools
         PYTHON_BIN="$$(command -v python3 || gcloud info --format='value(basic.python_location)')"
         "$${PYTHON_BIN}" ./scripts/generate_class_map.py
-        if gcloud storage ls gs://btvaroska/frc-10413/libs/fluxfig-latest.jar >/dev/null 2>&1; then
-          echo "Pulling latest FluxFig library from gs://btvaroska/frc-10413/libs/fluxfig-latest.jar..."
-          gcloud storage cp gs://btvaroska/frc-10413/libs/fluxfig-latest.jar /workspace/libs/fluxfig-1.0.0.jar
+        if gcloud storage ls gs://infra-2008/frc-10413/libs/fluxfig-latest.jar >/dev/null 2>&1; then
+          echo "Pulling latest FluxFig library from gs://infra-2008/frc-10413/libs/fluxfig-latest.jar..."
+          gcloud storage cp gs://infra-2008/frc-10413/libs/fluxfig-latest.jar /workspace/libs/fluxfig-1.0.0.jar
         fi
-        if gcloud storage ls gs://btvaroska/frc-10413/tools/flux-processor-latest.jar >/dev/null 2>&1; then
-          echo "Pulling standalone FluxProcessor utility from gs://btvaroska/frc-10413/tools/flux-processor-latest.jar..."
-          gcloud storage cp gs://btvaroska/frc-10413/tools/flux-processor-latest.jar /workspace/tools/flux-processor.jar
+        if gcloud storage ls gs://infra-2008/frc-10413/tools/flux-processor-latest.jar >/dev/null 2>&1; then
+          echo "Pulling standalone FluxProcessor utility from gs://infra-2008/frc-10413/tools/flux-processor-latest.jar..."
+          gcloud storage cp gs://infra-2008/frc-10413/tools/flux-processor-latest.jar /workspace/tools/flux-processor.jar
         fi
-        if gcloud storage ls gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
+        if gcloud storage ls gs://infra-2008/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
           echo "Restoring cached WPILib & CTRE Phoenix 6 JNI libraries from GCS..."
-          gcloud storage cp gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz /workspace/gradle-cache-restored.tar.gz
+          gcloud storage cp gs://infra-2008/frc-10413/gradle-cache/gradle-cache.tar.gz /workspace/gradle-cache-restored.tar.gz
           tar -xzf /workspace/gradle-cache-restored.tar.gz -C /workspace/.gradle-cache
           rm -f /workspace/gradle-cache-restored.tar.gz
           touch /workspace/.gradle-cache-restored
@@ -57,7 +59,7 @@ steps:
           tar --warning=no-file-changed -czf /workspace/gradle-cache.tar.gz -C /workspace/.gradle-cache . || true
         fi
 
-  # Step 3: Post Precision Scorecard to Terminal/GitHub (including red builds), Save Gradle Cache & Publish Passing Artifacts to gs://btvaroska/frc-10413/
+  # Step 3: Post Precision Scorecard to Terminal/GitHub (including red builds), Save Gradle Cache & Publish Passing Artifacts to gs://infra-2008/frc-10413/
   - name: "gcr.io/google.com/cloudsdktool/cloud-sdk:slim"
     id: "publish-precision-and-packages-to-gcs"
     env:
@@ -83,13 +85,13 @@ steps:
           exit "$${GRADLE_RC:-1}"
         fi
         source build/git-resolved.env
-        if [ -f /workspace/gradle-cache.tar.gz ] && ! gcloud storage ls gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
-          echo "Saving WPILib & CTRE JNI Gradle cache to gs://btvaroska/frc-10413/gradle-cache/..."
-          gcloud storage cp /workspace/gradle-cache.tar.gz gs://btvaroska/frc-10413/gradle-cache/gradle-cache.tar.gz
+        if [ -f /workspace/gradle-cache.tar.gz ] && ! gcloud storage ls gs://infra-2008/frc-10413/gradle-cache/gradle-cache.tar.gz >/dev/null 2>&1; then
+          echo "Saving WPILib & CTRE JNI Gradle cache to gs://infra-2008/frc-10413/gradle-cache/..."
+          gcloud storage cp /workspace/gradle-cache.tar.gz gs://infra-2008/frc-10413/gradle-cache/gradle-cache.tar.gz
         fi
         PKG_ZIP="$$(find build/packages -maxdepth 1 -name '*_systemcore-2027_fluxpkg.zip' | head -n 1)"
         PKG_ALIAS="$$(find build/packages -maxdepth 1 -name '*_v2027.1.0_fluxpkg.zip' | head -n 1)"
-        for DEST in "gs://btvaroska/frc-10413/builds/$${SHORT_SHA}" "gs://btvaroska/frc-10413/builds/latest"; do
+        for DEST in "gs://infra-2008/frc-10413/builds/$${SHORT_SHA}" "gs://infra-2008/frc-10413/builds/latest"; do
           gcloud storage cp build/precision-scorecard.json "$${DEST}/precision-scorecard.json"
           gcloud storage cp build/precision-scorecard.txt "$${DEST}/precision-scorecard.txt"
           gcloud storage cp build/precision-scorecard.html "$${DEST}/precision-scorecard.html"
@@ -111,11 +113,11 @@ steps:
             gcloud storage cp build/auto-sim/student-auto.mp4 "$${DEST}/student-auto.mp4"
           fi
         done
-        gcloud storage rsync --recursive build/badges "gs://btvaroska/frc-10413/badges/$${BRANCH}"
+        gcloud storage rsync --recursive build/badges "gs://infra-2008/frc-10413/badges/$${BRANCH}"
         echo "================================================================================"
         echo " Published Precision Scorecard & Packages to:"
-        echo "   gs://btvaroska/frc-10413/builds/$${SHORT_SHA}/precision-scorecard.html"
-        echo "   gs://btvaroska/frc-10413/builds/$${SHORT_SHA}/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
+        echo "   gs://infra-2008/frc-10413/builds/$${SHORT_SHA}/precision-scorecard.html"
+        echo "   gs://infra-2008/frc-10413/builds/$${SHORT_SHA}/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip"
         echo "================================================================================"
 
 substitutions:
@@ -123,3 +125,4 @@ substitutions:
 
 options:
   machineType: "E2_HIGHCPU_8"
+  logsBucket: "gs://infra-2008/_cloudbuild/logs"

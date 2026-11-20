@@ -10,11 +10,11 @@ Clean-sheet 2027 master robot repository for **FRC Team 10413 (FLUX Robotics)**,
 
 ---
 
-## Live Cloud Build Artifacts (`gs://btvaroska/frc-10413/`)
-* **Latest Interactive Precision Scorecard:** [`precision-scorecard.html`](https://storage.cloud.google.com/btvaroska/frc-10413/builds/latest/precision-scorecard.html)
-* **Latest Student Autonomous 3D Video (`COMP_2027` Empty Field):** [`student-auto.mp4`](https://storage.cloud.google.com/btvaroska/frc-10413/builds/latest/student-auto.mp4) | [`student-auto.html` (Interactive 3D Viewer)](https://storage.cloud.google.com/btvaroska/frc-10413/builds/latest/student-auto.html)
-* **Interactive Class & Dependency Explorer:** [`docs/class-map.html`](docs/class-map.html) *(also published to [`class-map.html` on GCS](https://storage.cloud.google.com/btvaroska/frc-10413/builds/latest/class-map.html))*
-* **Latest Offline Robot Package (`.fluxpkg.zip`):** [`STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip`](https://storage.cloud.google.com/btvaroska/frc-10413/builds/latest/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip)
+## Live Cloud Build Artifacts (`gs://infra-2008/frc-10413/`)
+* **Latest Interactive Precision Scorecard:** [`precision-scorecard.html`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/precision-scorecard.html)
+* **Latest Student Autonomous 3D Video (`COMP_2027` Empty Field):** [`student-auto.mp4`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/student-auto.mp4) | [`student-auto.html` (Interactive 3D Viewer)](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/student-auto.html)
+* **Interactive Class & Dependency Explorer:** [`docs/class-map.html`](docs/class-map.html) *(also published to [`class-map.html` on GCS](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/class-map.html))*
+* **Latest Offline Robot Package (`.fluxpkg.zip`):** [`STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip`](https://storage.cloud.google.com/infra-2008/frc-10413/builds/latest/STABLE_v2027.1.0_systemcore-2027_fluxpkg.zip)
 * **Student Developer Guide:** [`STUDENTS.md`](STUDENTS.md) | [`STUDENT-CHANGELOG.md`](STUDENT-CHANGELOG.md)
 
 ---
@@ -82,12 +82,14 @@ Every commit and manual `gcloud builds submit` runs all 5 verification tiers hea
 2. **Mentor / Multi-Repo Local Dev (`../FluxFig` cloned alongside this repo):**
    - Running `./gradlew build` or `./gradlew test` in this repo triggers `syncLocalFluxFig`, which pulls `../FluxFig/dist/fluxfig.jar` into [`libs/fluxfig-1.0.0.jar`](libs/fluxfig-1.0.0.jar) whenever `../FluxFig/dist/fluxfig.jar` is present.
 3. **GCP Cloud Build (`cloudbuild.yaml`):**
-   - `FluxFig/cloudbuild.yaml` publishes `gs://btvaroska/frc-10413/libs/fluxfig-latest.jar`, and Step `0` of [`cloudbuild.yaml`](cloudbuild.yaml) pulls `gs://btvaroska/frc-10413/libs/fluxfig-latest.jar` into `/workspace/libs/fluxfig-1.0.0.jar`.
+   - `FluxFig/cloudbuild.yaml` publishes `gs://infra-2008/frc-10413/libs/fluxfig-latest.jar`, and Step `0` of [`cloudbuild.yaml`](cloudbuild.yaml) pulls `gs://infra-2008/frc-10413/libs/fluxfig-latest.jar` into `/workspace/libs/fluxfig-1.0.0.jar`.
 
 ---
 
 ## Running Cloud Build Verification Manually
 ```bash
 gcloud builds submit . \
+  --project=infra-2008 \
+  --gcs-source-staging-dir=gs://infra-2008/_cloudbuild/source \
   --config=cloudbuild.yaml
 ```
