@@ -123,6 +123,7 @@ steps:
 substitutions:
   _GH_REPO: "FRC-Flux-Robotics/Flux-SystemCore-2027"
 
+logsBucket: "gs://infra-2008/_cloudbuild/logs"
+
 options:
   machineType: "E2_HIGHCPU_8"
-  logsBucket: "gs://infra-2008/_cloudbuild/logs"
